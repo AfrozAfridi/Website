@@ -1,1943 +1,596 @@
-<!--
-  FULL “PROPER” SINGLE-PAGE WEBSITE (One File)
-  - Galaxy theme (animated stars + planets + shooting stars)
-  - Multi-section layout (Home, Tools, Games, Fun, Gallery, About, Contact)
-  - Working features: Calculator, Unit Converter, Guess Game, Tic-Tac-Toe, Joke generator, Quote generator, To-do list, Timer
-  - Responsive design, smooth scrolling, modals, toasts, localStorage, dark/light, search, keyboard shortcuts
-  - No external libraries (works offline)
-
-  SAVE AS: index.html
-  OPEN IN BROWSER (or Live Server)
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Endless Galaxy • Full Website</title>
-  <meta name="description" content="A full proper working galaxy-themed website with tools, games, fun, gallery, and contact form." />
+  <meta charset="UTF-8">
+  <title>Endless Galaxy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    /* =========================
-       DESIGN SYSTEM
-       ========================= */
+    * { margin:0; padding:0; box-sizing:border-box; font-family:"Segoe UI",sans-serif; }
+
     :root{
-      --bgA:#050816;
-      --bgB:#0a102a;
-
-      --text:#e5e7eb;
-      --muted:#94a3b8;
-
-      --glass: rgba(255,255,255,.07);
-      --glass2: rgba(255,255,255,.05);
+      --bg-img: url("https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg");
+      --pink:#ff2f6d;
+      --pink2:#ff4b84;
+      --glass: rgba(0,0,0,.28);
       --border: 1px solid rgba(255,255,255,.14);
-      --shadow: 0 30px 80px rgba(0,0,0,.45);
-
-      --primary:#22c55e;
-      --primary2:#06b6d4;
-      --accent:#a78bfa;
-      --warning:#f59e0b;
-      --danger:#ef4444;
-
-      --ring: 0 0 0 3px rgba(34,197,94,.22);
-
-      --radius-lg: 20px;
-      --radius-md: 14px;
-
-      --maxw: 1180px;
     }
 
-    body.light{
-      --bgA:#eef2ff;
-      --bgB:#f8fafc;
-
-      --text:#0f172a;
-      --muted:#475569;
-
-      --glass: rgba(255,255,255,.78);
-      --glass2: rgba(255,255,255,.62);
-      --border: 1px solid rgba(2,8,23,.14);
-      --shadow: 0 20px 60px rgba(2,8,23,.14);
-
-      --primary:#16a34a;
-      --primary2:#0284c7;
-      --accent:#7c3aed;
-      --warning:#d97706;
-      --danger:#dc2626;
-
-      --ring: 0 0 0 3px rgba(2,132,199,.18);
-    }
-
-    *{ box-sizing:border-box; }
-    html{ scroll-behavior:smooth; }
     body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--text);
+      min-height:100vh;
       background:
-        radial-gradient(1200px 900px at 20% 10%, rgba(34,197,94,.18), transparent 55%),
-        radial-gradient(900px 700px at 85% 20%, rgba(6,182,212,.18), transparent 55%),
-        linear-gradient(180deg, var(--bgA), var(--bgB));
+        linear-gradient(rgba(30,0,60,.72), rgba(30,0,60,.72)),
+        var(--bg-img) no-repeat center/cover;
+      color:#fff;
+      transition: background 350ms ease;
       overflow-x:hidden;
+      position:relative;
     }
 
-    a{ color:inherit; text-decoration:none; }
-    button, input, select, textarea{ font-family:inherit; }
+    /* Different background for each section */
+    body.bg-home{ --bg-img: url("https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg"); }
+    body.bg-about{ --bg-img: url("https://images.pexels.com/photos/6498990/pexels-photo-6498990.jpeg"); }
+    body.bg-gallery{ --bg-img: url("https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg"); }
+    body.bg-contact{ --bg-img: url("https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg"); }
 
-    /* =========================
-       GALAXY BACKGROUND
-       ========================= */
-    .space{
+    /* ✨ Star overlay */
+    .stars{
       position:fixed;
       inset:0;
-      z-index:-5;
-      overflow:hidden;
-    }
-
-    .stars, .stars2, .stars3{
-      position:absolute; inset:0;
-      background-repeat:repeat;
-      opacity:.70;
-      animation: drift 120s linear infinite;
-      filter: drop-shadow(0 0 3px rgba(255,255,255,.14));
-    }
-
-    .stars{
+      pointer-events:none;
+      z-index:0;
+      opacity:.55;
       background-image:
-        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.95), transparent 40%),
-        radial-gradient(1px 1px at 80px 120px, rgba(255,255,255,.8), transparent 40%),
-        radial-gradient(1px 1px at 140px 60px, rgba(255,255,255,.75), transparent 40%),
-        radial-gradient(2px 2px at 210px 180px, rgba(255,255,255,.85), transparent 40%),
-        radial-gradient(1px 1px at 280px 90px, rgba(255,255,255,.75), transparent 40%),
-        radial-gradient(1px 1px at 320px 160px, rgba(255,255,255,.7), transparent 40%),
-        radial-gradient(2px 2px at 410px 70px, rgba(255,255,255,.8), transparent 40%);
-      background-size: 460px 260px;
+        radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,.9), transparent 40%),
+        radial-gradient(1px 1px at 80px 120px, rgba(255,255,255,.75), transparent 40%),
+        radial-gradient(1px 1px at 140px 60px, rgba(255,255,255,.65), transparent 40%),
+        radial-gradient(2px 2px at 220px 140px, rgba(255,255,255,.75), transparent 40%),
+        radial-gradient(1px 1px at 300px 90px, rgba(255,255,255,.6), transparent 40%),
+        radial-gradient(2px 2px at 420px 160px, rgba(255,255,255,.75), transparent 40%);
+      background-size: 520px 320px;
+      animation: drift 90s linear infinite;
+      filter: drop-shadow(0 0 4px rgba(255,255,255,.12));
     }
-
-    .stars2{
-      opacity:.48;
-      background-image:
-        radial-gradient(1px 1px at 30px 70px, rgba(255,255,255,.8), transparent 40%),
-        radial-gradient(2px 2px at 130px 10px, rgba(255,255,255,.7), transparent 40%),
-        radial-gradient(1px 1px at 190px 140px, rgba(255,255,255,.6), transparent 40%),
-        radial-gradient(1px 1px at 260px 40px, rgba(255,255,255,.65), transparent 40%),
-        radial-gradient(2px 2px at 310px 170px, rgba(255,255,255,.75), transparent 40%),
-        radial-gradient(1px 1px at 420px 210px, rgba(255,255,255,.6), transparent 40%);
-      background-size: 560px 320px;
-      animation-duration: 180s;
+    .stars.s2{
+      opacity:.32;
+      background-size: 780px 520px;
+      animation-duration: 140s;
     }
-
-    .stars3{
-      opacity:.30;
-      background-image:
-        radial-gradient(1px 1px at 20px 20px, rgba(255,255,255,.6), transparent 40%),
-        radial-gradient(1px 1px at 120px 90px, rgba(255,255,255,.55), transparent 40%),
-        radial-gradient(2px 2px at 220px 150px, rgba(255,255,255,.6), transparent 40%),
-        radial-gradient(1px 1px at 300px 60px, rgba(255,255,255,.5), transparent 40%),
-        radial-gradient(2px 2px at 460px 120px, rgba(255,255,255,.55), transparent 40%);
-      background-size: 720px 420px;
-      animation-duration: 260s;
-    }
-
     @keyframes drift{
       from{ transform: translateY(0); }
       to{ transform: translateY(-1200px); }
     }
 
-    /* Planets */
-    .planet{
-      position:absolute;
-      border-radius:999px;
-      box-shadow: 0 25px 70px rgba(0,0,0,.35);
-      opacity:.95;
-    }
-    .planet.p1{
-      width:260px; height:260px;
-      left:-90px; top:140px;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.25), transparent 45%),
-        radial-gradient(circle at 60% 70%, rgba(255,255,255,.12), transparent 40%),
-        linear-gradient(135deg, rgba(34,197,94,.95), rgba(6,182,212,.88));
-      animation: floaty 9s ease-in-out infinite;
-    }
-    .planet.p2{
-      width:190px; height:190px;
-      right:70px; top:110px;
-      background:
-        radial-gradient(circle at 35% 35%, rgba(255,255,255,.22), transparent 45%),
-        linear-gradient(135deg, rgba(251,191,36,.92), rgba(244,63,94,.86));
-      opacity:.92;
-      animation: floaty 11s ease-in-out infinite;
-    }
-    .planet.p3{
-      width:140px; height:140px;
-      right:150px; bottom:120px;
-      background:
-        radial-gradient(circle at 35% 35%, rgba(255,255,255,.20), transparent 45%),
-        linear-gradient(135deg, rgba(99,102,241,.92), rgba(6,182,212,.82));
-      opacity:.86;
-      animation: floaty 10s ease-in-out infinite;
-    }
-    @keyframes floaty{
-      0%,100%{ transform: translateY(0); }
-      50%{ transform: translateY(-10px); }
-    }
-
-    .ring{
-      position:absolute;
-      width:260px; height:80px;
-      right:25px; top:160px;
-      border-radius:999px;
-      border: 2px solid rgba(255,255,255,.22);
-      transform: rotate(-18deg);
-      box-shadow: 0 10px 40px rgba(0,0,0,.25);
-      opacity:.55;
-    }
-
-    /* Shooting stars */
-    .shooting-stars{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      opacity:.8;
-    }
-    .shooting-stars span{
-      position:absolute;
-      width:140px;
-      height:2px;
-      background: linear-gradient(90deg, rgba(255,255,255,.95), transparent);
-      border-radius:999px;
-      filter: drop-shadow(0 0 6px rgba(255,255,255,.25));
-      animation: shoot 4.8s linear infinite;
-      opacity:0;
-    }
-    .shooting-stars span:nth-child(1){ top:18%; left:-10%; animation-delay: .2s; transform: rotate(12deg); }
-    .shooting-stars span:nth-child(2){ top:32%; left:-20%; animation-delay: 1.6s; transform: rotate(10deg); }
-    .shooting-stars span:nth-child(3){ top:56%; left:-15%; animation-delay: 3.1s; transform: rotate(14deg); }
-    .shooting-stars span:nth-child(4){ top:72%; left:-25%; animation-delay: 4.2s; transform: rotate(9deg); }
-    @keyframes shoot{
-      0%{ transform: translateX(0) rotate(12deg); opacity:0; }
-      10%{ opacity:1; }
-      30%{ opacity:1; }
-      45%{ transform: translateX(140vw) rotate(12deg); opacity:0; }
-      100%{ opacity:0; }
-    }
-
-    /* =========================
-       TOP NAV
-       ========================= */
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:50;
-      backdrop-filter: blur(14px);
-      background: rgba(2,6,23,.45);
-      border-bottom: var(--border);
-    }
-    body.light .topbar{ background: rgba(248,250,252,.70); }
-
-    .topbar-inner{
-      max-width: var(--maxw);
-      margin: 0 auto;
-      padding: 14px 18px;
-      display:flex;
-      gap:14px;
-      align-items:center;
-      justify-content:space-between;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width: 240px;
-    }
-    .logo{
-      width:44px;height:44px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, var(--primary), var(--primary2));
-      box-shadow: 0 12px 34px rgba(34,197,94,.25);
+    nav{
       position:relative;
-      overflow:hidden;
-      flex:0 0 auto;
-    }
-    .logo:after{
-      content:"";
-      position:absolute;
-      inset:-20px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 45%);
-      transform: rotate(15deg);
-    }
-    .brand h1{
-      margin:0;
-      font-size:15px;
-      letter-spacing:.3px;
-      line-height:1.2;
-    }
-    .brand p{
-      margin:0;
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .navlinks{
+      z-index:2;
       display:flex;
-      gap:10px;
-      flex-wrap:wrap;
+      justify-content:space-between;
       align-items:center;
-      justify-content:center;
-    }
-    .navlinks a{
-      padding:9px 12px;
-      border-radius:999px;
-      border: var(--border);
-      background: var(--glass);
-      color: var(--text);
-      font-weight:900;
-      font-size:13px;
-      transition: transform .15s ease, background .15s ease, border-color .15s ease;
-    }
-    .navlinks a:hover{
-      transform: translateY(-1px);
-      background: rgba(255,255,255,.10);
-      border-color: rgba(34,197,94,.35);
+      padding: 22px 70px;
+      gap:20px;
+      backdrop-filter: blur(10px);
     }
 
-    .top-actions{
+    nav h1{
+      font-size:28px;
+      letter-spacing:2px;
+      user-select:none;
+      text-shadow: 0 10px 40px rgba(0,0,0,.35);
+    }
+
+    nav ul{
+      list-style:none;
       display:flex;
-      gap:10px;
+      gap:18px;
+      flex-wrap:wrap;
       align-items:center;
       justify-content:flex-end;
-      min-width: 220px;
     }
 
-    .pill{
-      padding:10px 12px;
+    .navbtn{
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      color:#fff;
+      padding:10px 16px;
       border-radius:999px;
-      border: var(--border);
-      background: var(--glass);
-      color:var(--text);
       cursor:pointer;
-      font-weight:900;
-      font-size:13px;
-      transition: transform .15s ease, background .15s ease;
-      user-select:none;
-      white-space:nowrap;
-    }
-    .pill:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
-    .pill:active{ transform: translateY(0); }
-
-    .searchwrap{
-      position:relative;
-      width: 220px;
-      max-width: 40vw;
-    }
-    .searchwrap input{
-      width:100%;
-      padding:10px 12px 10px 36px;
-      border-radius: 999px;
-      border: var(--border);
-      background: var(--glass);
-      color: var(--text);
-      outline:none;
-      transition: box-shadow .15s ease, border-color .15s ease;
-      font-weight:800;
-      font-size:13px;
-    }
-    .searchwrap input:focus{
-      box-shadow: var(--ring);
-      border-color: rgba(34,197,94,.55);
-    }
-    .searchwrap .icon{
-      position:absolute;
-      left:12px; top:50%;
-      transform: translateY(-50%);
-      opacity:.7;
-      font-size:14px;
-    }
-
-    /* =========================
-       LAYOUT
-       ========================= */
-    .container{
-      max-width: var(--maxw);
-      margin: 0 auto;
-      padding: 18px 18px 70px;
-    }
-
-    .hero{
-      margin-top: 18px;
-      border: var(--border);
-      border-radius: var(--radius-lg);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-      overflow:hidden;
-      position:relative;
-    }
-    .hero-inner{
-      padding: 26px;
-      display:grid;
-      grid-template-columns: 1.25fr .75fr;
-      gap: 18px;
-      align-items:start;
-    }
-    @media (max-width: 900px){
-      .hero-inner{ grid-template-columns: 1fr; }
-      .top-actions{ min-width: unset; }
-      .brand{ min-width: unset; }
-    }
-
-    .badge-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 10px;
-    }
-    .badge{
-      font-size:12px;
-      padding:8px 10px;
-      border-radius: 999px;
-      border: var(--border);
-      background: rgba(255,255,255,.05);
-      color: var(--muted);
-      font-weight:900;
-    }
-
-    .hero h2{
-      margin:0 0 8px;
-      font-size: 34px;
-      letter-spacing:.2px;
-    }
-    .hero p{
-      margin:0;
-      color: var(--muted);
-      line-height:1.6;
       font-weight:600;
+      transition:.25s;
+      position:relative;
     }
-    .hero .cta{
+    .navbtn:hover{ background: rgba(255,255,255,.18); transform: translateY(-1px); }
+    .navbtn.active{
+      background: var(--pink);
+      border-color: transparent;
+      box-shadow: 0 12px 28px rgba(255,47,109,.25);
+    }
+
+    .wrap{
+      position:relative;
+      z-index:2;
+      padding: 30px 70px 70px;
+      max-width: 1150px;
+    }
+
+    .panel{
+      display:none;
+      max-width: 780px;
+      padding: 22px 22px;
+      border-radius: 18px;
+      background: var(--glass);
+      border: var(--border);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      animation: pop .35s ease;
+    }
+    .panel.active{ display:block; }
+
+    @keyframes pop{
+      from{ transform: translateY(10px); opacity:0; }
+      to{ transform: translateY(0); opacity:1; }
+    }
+
+    .kicker{
+      font-size: 15px;
+      letter-spacing: 3px;
+      opacity:.85;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .title{
+      font-size: 64px;
+      line-height: 1.05;
+      margin-bottom: 14px;
+      text-shadow: 0 18px 60px rgba(0,0,0,.35);
+    }
+
+    .desc{
+      font-size: 18px;
+      opacity:.92;
+      line-height: 1.65;
+      margin-bottom: 18px;
+      max-width: 640px;
+    }
+
+    .btnrow{
       display:flex;
-      gap:10px;
+      gap:12px;
       flex-wrap:wrap;
-      margin-top: 16px;
+      margin-top: 14px;
     }
 
     .btn{
-      border: none;
-      cursor:pointer;
-      font-weight:950;
-      border-radius: 14px;
-      padding: 12px 14px;
-      background: linear-gradient(135deg, var(--primary), var(--primary2));
-      color: #071014;
-      box-shadow: 0 18px 48px rgba(34,197,94,.18);
-      transition: transform .15s ease, filter .15s ease;
       display:inline-flex;
       align-items:center;
-      gap:8px;
-      justify-content:center;
-      min-width: 160px;
+      gap:10px;
+      padding: 14px 22px;
+      background: var(--pink);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: .25s;
+      text-decoration:none;
+      font-weight:700;
+      box-shadow: 0 18px 40px rgba(255,47,109,.18);
     }
-    .btn:hover{ transform: translateY(-1px); filter: brightness(1.05); }
-    .btn:active{ transform: translateY(0); }
+    .btn:hover{ background: var(--pink2); transform: translateY(-1px) scale(1.02); }
+
     .btn.secondary{
-      background: rgba(255,255,255,.07);
-      color: var(--text);
-      border: var(--border);
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
       box-shadow:none;
     }
-    body.light .btn.secondary{ background: rgba(2,8,23,.04); }
-    .btn.danger{
-      background: linear-gradient(135deg, var(--danger), #fb7185);
-      color:#170406;
+    .btn.secondary:hover{
+      background: rgba(255,255,255,.18);
+      transform: translateY(-1px);
     }
 
-    .card{
-      border: var(--border);
-      border-radius: var(--radius-lg);
-      background: var(--glass2);
-      backdrop-filter: blur(12px);
-      box-shadow: 0 20px 60px rgba(0,0,0,.20);
-      padding: 16px;
-    }
-    .card h3{
-      margin:0 0 10px;
-      font-size: 16px;
-      letter-spacing:.2px;
-    }
-    .small{ color: var(--muted); font-size: 13px; line-height:1.5; margin:0; font-weight:700; }
-
-    .grid{
-      margin-top: 16px;
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 14px;
-    }
-
-    .col-6{ grid-column: span 6; }
-    .col-4{ grid-column: span 4; }
-    .col-8{ grid-column: span 8; }
-    .col-12{ grid-column: span 12; }
-
-    @media (max-width: 980px){
-      .col-6,.col-4,.col-8{ grid-column: span 12; }
-      .searchwrap{ width: 170px; }
-    }
-
-    .section-title{
-      margin: 26px 0 10px;
+    .chiprow{
       display:flex;
-      align-items:center;
-      justify-content:space-between;
       gap:10px;
       flex-wrap:wrap;
+      margin-top: 12px;
     }
-    .section-title h2{
-      margin:0;
-      font-size: 20px;
-      letter-spacing:.2px;
-    }
-    .section-title p{
-      margin:0;
-      color: var(--muted);
-      font-weight:700;
-      font-size: 13px;
-    }
-
-    label{
-      display:block;
-      font-size: 13px;
-      font-weight: 900;
-      color: var(--muted);
-      margin: 10px 0 6px;
-    }
-
-    input, select, textarea{
-      width:100%;
-      padding:12px 12px;
-      border-radius: 14px;
-      border: var(--border);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      outline:none;
-      transition: box-shadow .15s ease, border-color .15s ease, background .15s ease;
-      font-weight:800;
-    }
-    body.light input, body.light select, body.light textarea{
-      background: rgba(2,8,23,.03);
-    }
-    input:focus, select:focus, textarea:focus{
-      box-shadow: var(--ring);
-      border-color: rgba(34,197,94,.55);
+    .chip{
+      padding:8px 10px;
+      border-radius:999px;
       background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      font-size:12px;
+      font-weight:700;
+      opacity:.92;
     }
 
-    .result{
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 14px;
-      border: var(--border);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      line-height:1.55;
-      min-height: 48px;
-      font-weight:800;
-    }
-    body.light .result{ background: rgba(2,8,23,.03); }
-
-    .row{
+    .cardgrid{
       display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      margin-top: 12px;
     }
-    @media (max-width: 620px){
-      .row{ grid-template-columns: 1fr; }
-      .btn{ width:100%; min-width: unset; }
-      .searchwrap{ display:none; }
-      .navlinks{ display:none; }
+    .card{
+      padding:14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      transition: transform .18s ease, background .18s ease;
     }
-
-    /* Tabs / Tool switcher */
-    .tabs{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom: 10px;
-    }
-    .tab{
-      padding:10px 12px;
-      border-radius: 999px;
-      border: var(--border);
-      background: rgba(255,255,255,.06);
-      cursor:pointer;
-      font-weight:900;
-      color: var(--text);
-      transition: transform .15s ease, background .15s ease, border-color .15s ease;
-      user-select:none;
-    }
-    .tab:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
-    .tab.active{
-      background: linear-gradient(135deg, rgba(34,197,94,.22), rgba(6,182,212,.18));
-      border-color: rgba(34,197,94,.45);
-      box-shadow: 0 12px 30px rgba(34,197,94,.12);
-    }
-
-    .hidden{ display:none !important; }
-
-    /* Gallery */
-    .gallery{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 14px;
-    }
-    .tile{
-      grid-column: span 4;
-      border: var(--border);
-      border-radius: var(--radius-lg);
-      background: rgba(255,255,255,.05);
-      overflow:hidden;
-      position:relative;
-      cursor:pointer;
-      transition: transform .18s ease, filter .18s ease, border-color .18s ease;
-      min-height: 170px;
-    }
-    .tile:hover{
+    .card:hover{
       transform: translateY(-3px);
-      border-color: rgba(167,139,250,.40);
+      background: rgba(255,255,255,.11);
     }
-    .tile .img{
-      position:absolute; inset:0;
-      background:
-        radial-gradient(900px 400px at 20% 10%, rgba(34,197,94,.25), transparent 55%),
-        radial-gradient(900px 400px at 85% 25%, rgba(6,182,212,.22), transparent 55%),
-        radial-gradient(900px 400px at 60% 80%, rgba(167,139,250,.22), transparent 55%),
-        linear-gradient(135deg, rgba(15,23,42,.9), rgba(2,6,23,.9));
-      filter: saturate(1.2);
-    }
-    .tile:nth-child(2) .img{
-      background:
-        radial-gradient(900px 400px at 20% 10%, rgba(245,158,11,.25), transparent 55%),
-        radial-gradient(900px 400px at 85% 25%, rgba(239,68,68,.22), transparent 55%),
-        radial-gradient(900px 400px at 60% 80%, rgba(99,102,241,.22), transparent 55%),
-        linear-gradient(135deg, rgba(15,23,42,.9), rgba(2,6,23,.9));
-    }
-    .tile:nth-child(3) .img{
-      background:
-        radial-gradient(900px 400px at 20% 10%, rgba(99,102,241,.25), transparent 55%),
-        radial-gradient(900px 400px at 85% 25%, rgba(6,182,212,.22), transparent 55%),
-        radial-gradient(900px 400px at 60% 80%, rgba(34,197,94,.22), transparent 55%),
-        linear-gradient(135deg, rgba(15,23,42,.9), rgba(2,6,23,.9));
-    }
-    .tile:nth-child(4) .img{
-      background:
-        radial-gradient(900px 400px at 20% 10%, rgba(167,139,250,.25), transparent 55%),
-        radial-gradient(900px 400px at 85% 25%, rgba(34,197,94,.22), transparent 55%),
-        radial-gradient(900px 400px at 60% 80%, rgba(245,158,11,.22), transparent 55%),
-        linear-gradient(135deg, rgba(15,23,42,.9), rgba(2,6,23,.9));
-    }
-    .tile:nth-child(5) .img{
-      background:
-        radial-gradient(900px 400px at 20% 10%, rgba(6,182,212,.25), transparent 55%),
-        radial-gradient(900px 400px at 85% 25%, rgba(99,102,241,.22), transparent 55%),
-        radial-gradient(900px 400px at 60% 80%, rgba(239,68,68,.20), transparent 55%),
-        linear-gradient(135deg, rgba(15,23,42,.9), rgba(2,6,23,.9));
-    }
-    .tile:nth-child(6) .img{
-      background:
-        radial-gradient(900px 400px at 20% 10%, rgba(34,197,94,.25), transparent 55%),
-        radial-gradient(900px 400px at 85% 25%, rgba(167,139,250,.22), transparent 55%),
-        radial-gradient(900px 400px at 60% 80%, rgba(6,182,212,.22), transparent 55%),
-        linear-gradient(135deg, rgba(15,23,42,.9), rgba(2,6,23,.9));
-    }
-    .tile .meta{
-      position:absolute;
-      left:12px;
-      right:12px;
-      bottom:12px;
-      padding:10px 12px;
-      border-radius: 14px;
-      border: var(--border);
-      background: rgba(0,0,0,.25);
-      backdrop-filter: blur(10px);
-    }
-    body.light .tile .meta{ background: rgba(255,255,255,.55); }
-    .tile .meta b{ display:block; font-size:14px; }
-    .tile .meta span{ color: var(--muted); font-size: 12px; font-weight:800; }
+    .card b{ display:block; margin-bottom:6px; }
+    .card span{ opacity:.9; font-size:14px; line-height:1.4; }
 
-    @media (max-width: 980px){
-      .tile{ grid-column: span 6; }
+    /* Gallery cards */
+    .gallerygrid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      margin-top: 12px;
     }
-    @media (max-width: 620px){
-      .tile{ grid-column: span 12; }
+    .gcard{
+      border-radius:16px;
+      border: 1px solid rgba(255,255,255,.14);
+      overflow:hidden;
+      cursor:pointer;
+      background: rgba(255,255,255,.08);
+      transition: transform .18s ease, filter .18s ease;
+      position:relative;
+      min-height: 160px;
     }
+    .gcard:hover{ transform: translateY(-3px); filter: brightness(1.05); }
+    .gimg{
+      position:absolute; inset:0;
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.05);
+      opacity:.95;
+    }
+    .gmeta{
+      position:absolute;
+      left:10px; right:10px; bottom:10px;
+      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      border-radius: 14px;
+      padding:10px;
+    }
+    .gmeta b{ display:block; font-size:14px; margin-bottom:2px; }
+    .gmeta span{ font-size:12px; opacity:.9; }
 
     /* Modal */
-    .modal-backdrop{
+    .modalbg{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
       display:none;
       align-items:center;
       justify-content:center;
-      z-index:200;
-      padding: 18px;
+      background: rgba(0,0,0,.6);
+      z-index:99;
+      padding:16px;
     }
-    .modal-backdrop.show{ display:flex; }
+    .modalbg.show{ display:flex; }
     .modal{
-      width:min(780px, 100%);
-      border-radius: 22px;
-      border: var(--border);
-      background: var(--glass);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
+      width:min(820px, 100%);
+      border-radius:18px;
       overflow:hidden;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 30px 80px rgba(0,0,0,.55);
     }
-    .modal-head{
+    .modalhead{
       display:flex;
-      align-items:center;
       justify-content:space-between;
-      gap:10px;
-      padding: 14px 16px;
-      border-bottom: var(--border);
-      background: rgba(255,255,255,.04);
-    }
-    .modal-body{
-      padding: 16px;
+      align-items:center;
+      padding:12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
     }
     .xbtn{
       width:42px;height:42px;
-      border-radius: 14px;
-      border: var(--border);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
+      border-radius:12px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color:#fff;
       cursor:pointer;
-      font-weight:950;
-      font-size: 16px;
+      font-weight:900;
+      font-size:16px;
+    }
+    .modalbody{
+      padding:14px;
+    }
+    .modalimg{
+      width:100%;
+      height: 420px;
+      border-radius:16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background-size: cover;
+      background-position: center;
+    }
+    .modaltext{
+      margin-top: 10px;
+      opacity:.95;
+      line-height:1.6;
+      font-size:14px;
     }
 
     /* Toast */
     .toast{
       position:fixed;
-      right: 16px;
-      bottom: 16px;
-      z-index:300;
-      border: var(--border);
-      border-radius: 16px;
-      background: var(--glass);
-      backdrop-filter: blur(14px);
-      padding: 12px 14px;
-      box-shadow: var(--shadow);
+      right:16px;
+      bottom:16px;
+      z-index:120;
+      display:none;
       min-width: 240px;
-      transform: translateY(20px);
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .2s ease, transform .2s ease;
-      font-weight:900;
-    }
-    .toast.show{
-      opacity:1;
-      transform: translateY(0);
-    }
-    .toast .tmuted{
-      display:block;
-      margin-top: 2px;
-      color: var(--muted);
-      font-size:12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
       font-weight:800;
     }
+    .toast.show{ display:block; animation: pop .25s ease; }
+    .toast small{ display:block; opacity:.9; font-weight:700; margin-top:2px; }
 
-    /* Tic Tac Toe */
-    .ttt{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-      margin-top: 10px;
+    .input, textarea{
+      width:100%;
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color:#fff;
+      outline:none;
     }
-    .cell{
-      aspect-ratio: 1 / 1;
-      border-radius: 18px;
-      border: var(--border);
-      background: rgba(255,255,255,.06);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size: 36px;
-      font-weight: 950;
-      cursor:pointer;
-      user-select:none;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-    }
-    .cell:hover{
-      transform: translateY(-2px);
-      background: rgba(255,255,255,.10);
-      border-color: rgba(167,139,250,.40);
+    .input:focus, textarea:focus{
+      border-color: rgba(255,47,109,.65);
+      box-shadow: 0 0 0 3px rgba(255,47,109,.18);
     }
 
-    /* Footer */
-    footer{
-      margin-top: 26px;
-      text-align:center;
-      color: var(--muted);
-      font-weight:800;
-      font-size:12px;
+    .note{
+      margin-top:10px;
+      font-size: 13px;
+      opacity:.85;
     }
 
-    /* Accessibility */
-    .sr-only{
-      position:absolute;
-      width:1px;height:1px;
-      padding:0;margin:-1px;
-      overflow:hidden;
-      clip:rect(0,0,0,0);
-      white-space:nowrap;border-width:0;
+    @media (max-width: 900px){
+      nav{ padding: 18px 18px; }
+      .wrap{ padding: 22px 18px 70px; }
+      .title{ font-size: 44px; }
+      .cardgrid, .gallerygrid{ grid-template-columns: 1fr; }
+      .modalimg{ height: 280px; }
     }
   </style>
 </head>
 
-<body>
-  <!-- Galaxy background layers -->
-  <div class="space" aria-hidden="true">
-    <div class="stars"></div>
-    <div class="stars stars2"></div>
-    <div class="stars stars3"></div>
+<body class="bg-home">
+  <div class="stars"></div>
+  <div class="stars s2"></div>
 
-    <div class="planet p1"></div>
-    <div class="planet p2"></div>
-    <div class="ring"></div>
-    <div class="planet p3"></div>
+  <nav>
+    <h1>Endless Galaxy</h1>
+    <ul>
+      <li><button class="navbtn active" data-page="home">Home</button></li>
+      <li><button class="navbtn" data-page="about">About</button></li>
+      <li><button class="navbtn" data-page="gallery">Gallery</button></li>
+      <li><button class="navbtn" data-page="contact">Contact</button></li>
+    </ul>
+  </nav>
 
-    <div class="shooting-stars">
-      <span></span><span></span><span></span><span></span>
-    </div>
-  </div>
+  <div class="wrap">
 
-  <!-- Topbar -->
-  <div class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="logo"></div>
-        <div>
-          <h1>Endless Website</h1>
-          <p>Welcome to Endless Website — this is just a test</p>
-        </div>
+    <!-- HOME -->
+    <section class="panel active" id="home">
+      <div class="kicker">WELCOME TO</div>
+      <div class="title">Endless Galaxy</div>
+      <div class="desc">This galaxy belongs to Endless — my vision, my world.</div>
+
+      <div class="btnrow">
+        <button class="btn" id="startBtn">🚀 Get Started</button>
+        <button class="btn secondary" id="exploreBtn">✨ Explore Gallery</button>
       </div>
 
-      <nav class="navlinks" aria-label="Primary navigation">
-        <a href="#home">Home</a>
-        <a href="#tools">Tools</a>
-        <a href="#games">Games</a>
-        <a href="#fun">Fun</a>
-        <a href="#gallery">Gallery</a>
-        <a href="#contact">Contact</a>
-      </nav>
-
-      <div class="top-actions">
-        <div class="searchwrap">
-          <span class="icon">🔎</span>
-          <input id="searchInput" type="text" placeholder="Search (tools, games...)" />
-        </div>
-        <button class="pill" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
-        <button class="pill" onclick="openHelp()">❓ Help</button>
+      <div class="chiprow">
+        <span class="chip">🌌 Cinematic</span>
+        <span class="chip">⚡ Fast</span>
+        <span class="chip">📱 Mobile-friendly</span>
+        <span class="chip">🧠 Evolving project</span>
       </div>
-    </div>
-  </div>
 
-  <main class="container">
-    <!-- HERO / HOME -->
-    <section id="home" class="hero">
-      <div class="hero-inner">
-        <div>
-          <h2>Welcome to Endless Galaxy</h2>
-          <p>
-            This is a full proper working website (one HTML file) with a galaxy theme, modern layout,
-            multiple sections, and lots of features — all running locally.
-          </p>
-
-          <div class="badge-row">
-            <span class="badge">🌌 Galaxy Design</span>
-            <span class="badge">⚡ Fast + Offline</span>
-            <span class="badge">🧰 Tools + Games</span>
-            <span class="badge">💾 Saves with LocalStorage</span>
-            <span class="badge">⌨️ Keyboard Shortcuts</span>
-          </div>
-
-          <div class="cta">
-            <a class="btn" href="#tools">🚀 Explore Tools</a>
-            <a class="btn secondary" href="#games">🎮 Play Games</a>
-            <button class="btn secondary" onclick="randomizeTheme()">✨ Random Theme</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Quick Actions</h3>
-          <p class="small">Try these to see everything working instantly:</p>
-          <div class="cta" style="margin-top:12px">
-            <button class="btn secondary" onclick="toast('Saved!', 'Your settings are remembered here.')">💾 Show Toast</button>
-            <button class="btn secondary" onclick="openModal('Galaxy Tip', 'Use the menu or scroll. Press <b>/</b> to focus search. Press <b>Esc</b> to close modals.')">🪐 Open Modal</button>
-          </div>
-          <div class="result" id="statusBox" style="margin-top:12px">
-            Status: Ready ✅
-            <span style="display:block;color:var(--muted);font-size:12px;font-weight:800;margin-top:4px">
-              Tip: Use Live Server for hot reload
-            </span>
-          </div>
-        </div>
-      </div>
+      <div class="note">Tip: use the menu — each page has its own galaxy background.</div>
     </section>
 
-    <!-- TOOLS -->
-    <div class="section-title" id="tools">
-      <h2>🧰 Tools</h2>
-      <p>Calculator • Converter • To-do list • Timer (All working)</p>
-    </div>
+    <!-- ABOUT -->
+    <section class="panel" id="about">
+      <div class="kicker">ABOUT</div>
+      <div class="title" style="font-size:44px">What is Endless Galaxy?</div>
 
-    <section class="grid">
-      <!-- Tool switcher -->
-      <div class="card col-12">
-        <div class="tabs" role="tablist" aria-label="Tools Tabs">
-          <button class="tab active" data-tab="calc" onclick="showTool('calc')">Calculator</button>
-          <button class="tab" data-tab="convert" onclick="showTool('convert')">Converter</button>
-          <button class="tab" data-tab="todo" onclick="showTool('todo')">To-do</button>
-          <button class="tab" data-tab="timer" onclick="showTool('timer')">Timer</button>
-        </div>
-
-        <!-- Calculator -->
-        <div id="tool-calc">
-          <div class="row">
-            <div>
-              <label>Number 1</label>
-              <input type="number" id="num1" placeholder="Enter first number" />
-            </div>
-            <div>
-              <label>Number 2</label>
-              <input type="number" id="num2" placeholder="Enter second number" />
-            </div>
-          </div>
-
-          <label>Operator</label>
-          <select id="op">
-            <option value="+">Add (+)</option>
-            <option value="-">Subtract (-)</option>
-            <option value="*">Multiply (*)</option>
-            <option value="/">Divide (/)</option>
-            <option value="^">Power (^)</option>
-          </select>
-
-          <div class="row">
-            <button class="btn" onclick="calculate()">Calculate</button>
-            <button class="btn secondary" onclick="clearCalc()">Clear</button>
-          </div>
-
-          <div class="result" id="calcResult">Result: —</div>
-        </div>
-
-        <!-- Converter -->
-        <div id="tool-convert" class="hidden">
-          <div class="row">
-            <div>
-              <label>Type</label>
-              <select id="convType" onchange="updateConverterUI()">
-                <option value="temp">Temperature</option>
-                <option value="length">Length</option>
-                <option value="weight">Weight</option>
-              </select>
-            </div>
-            <div>
-              <label>Value</label>
-              <input type="number" id="convValue" placeholder="Enter a value" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label>From</label>
-              <select id="convFrom"></select>
-            </div>
-            <div>
-              <label>To</label>
-              <select id="convTo"></select>
-            </div>
-          </div>
-
-          <div class="row">
-            <button class="btn" onclick="convert()">Convert</button>
-            <button class="btn secondary" onclick="resetConverter()">Reset</button>
-          </div>
-
-          <div class="result" id="convResult">Converted: —</div>
-        </div>
-
-        <!-- To-do -->
-        <div id="tool-todo" class="hidden">
-          <div class="row">
-            <div>
-              <label>Add a task</label>
-              <input id="todoInput" type="text" placeholder="e.g., Learn HTML & CSS" />
-            </div>
-            <div style="display:flex;align-items:flex-end;gap:10px">
-              <button class="btn" style="width:100%" onclick="addTodo()">Add</button>
-              <button class="btn secondary" style="width:100%" onclick="clearTodos()">Clear All</button>
-            </div>
-          </div>
-          <div class="result" id="todoBox" style="min-height: 80px">No tasks yet.</div>
-          <p class="small" style="margin-top:10px">Saved automatically in your browser (localStorage).</p>
-        </div>
-
-        <!-- Timer -->
-        <div id="tool-timer" class="hidden">
-          <div class="row">
-            <div>
-              <label>Minutes</label>
-              <input type="number" id="timerMin" placeholder="e.g., 1" />
-            </div>
-            <div>
-              <label>Seconds</label>
-              <input type="number" id="timerSec" placeholder="e.g., 30" />
-            </div>
-          </div>
-          <div class="row">
-            <button class="btn" onclick="startTimer()">Start</button>
-            <button class="btn secondary" onclick="pauseTimer()">Pause</button>
-          </div>
-          <button class="btn danger" onclick="resetTimer()">Reset</button>
-          <div class="result" id="timerDisplay">Timer: 00:00</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- GAMES -->
-    <div class="section-title" id="games">
-      <h2>🎮 Games</h2>
-      <p>Guess the Number • Tic-Tac-Toe</p>
-    </div>
-
-    <section class="grid">
-      <!-- Guess the number -->
-      <div class="card col-6" id="game-guess">
-        <h3>Guess the Number (1–20)</h3>
-        <p class="small">I picked a secret number. You have unlimited tries — have fun.</p>
-
-        <label>Your guess</label>
-        <input type="number" id="guessInput" placeholder="Enter 1 to 20" />
-
-        <div class="row">
-          <button class="btn" onclick="checkGuess()">Guess</button>
-          <button class="btn secondary" onclick="resetGame()">New Game</button>
-        </div>
-        <button class="btn danger" onclick="reveal()">Reveal Answer</button>
-
-        <div class="result" id="gameMessage">Make a guess to start!</div>
-        <p class="small" style="margin-top:10px">Attempts: <span id="attempts">0</span></p>
+      <div class="desc">
+        Endless Galaxy is a personal project I’m building for myself — a place to experiment, improve my skills,
+        and turn ideas into something real. I care about simple design, strong visuals, and pages that feel smooth
+        to use on both mobile and desktop.
+        <br><br>
+        This site will keep evolving. Every update is part of the journey.
       </div>
 
-      <!-- Tic Tac Toe -->
-      <div class="card col-6" id="game-ttt">
-        <h3>Tic-Tac-Toe</h3>
-        <p class="small">Player <b>X</b> vs Player <b>O</b>. First to get 3 in a row wins.</p>
-
-        <div class="ttt" id="tttGrid" aria-label="Tic Tac Toe Board"></div>
-
-        <div class="row" style="margin-top:12px">
-          <button class="btn" onclick="resetTTT()">Reset</button>
-          <button class="btn secondary" onclick="toggleAIMode()">AI: <span id="aiLabel">OFF</span></button>
-        </div>
-
-        <div class="result" id="tttStatus">Turn: X</div>
-      </div>
-    </section>
-
-    <!-- FUN -->
-    <div class="section-title" id="fun">
-      <h2>😄 Fun</h2>
-      <p>Jokes • Quotes • Random facts (offline)</p>
-    </div>
-
-    <section class="grid">
-      <div class="card col-4" id="fun-jokes">
-        <h3>Random Joke</h3>
-        <p class="small">Click for a joke (offline list).</p>
-        <button class="btn" onclick="randomJoke()">Tell me a joke</button>
-        <button class="btn secondary" onclick="copyText('jokeBox')">Copy</button>
-        <div class="result" id="jokeBox">Joke: —</div>
+      <div class="cardgrid">
+        <div class="card"><b>Why I made it</b><span>To build something I can grow over time.</span></div>
+        <div class="card"><b>What you’ll find</b><span>Pages, ideas, and experiments — all in one place.</span></div>
+        <div class="card"><b>What’s next</b><span>More sections, better design, and new features.</span></div>
       </div>
 
-      <div class="card col-4" id="fun-quotes">
-        <h3>Quote Generator</h3>
-        <p class="small">Get a motivational quote.</p>
-        <button class="btn" onclick="randomQuote()">New quote</button>
-        <button class="btn secondary" onclick="copyText('quoteBox')">Copy</button>
-        <div class="result" id="quoteBox">Quote: —</div>
-      </div>
-
-      <div class="card col-4" id="fun-facts">
-        <h3>Random Fact</h3>
-        <p class="small">A fun space-ish fact.</p>
-        <button class="btn" onclick="randomFact()">New fact</button>
-        <button class="btn secondary" onclick="copyText('factBox')">Copy</button>
-        <div class="result" id="factBox">Fact: —</div>
+      <div class="cardgrid" style="margin-top:12px">
+        <div class="card"><b>Focus</b><span>Design + usability</span></div>
+        <div class="card"><b>Status</b><span>Actively improving</span></div>
+        <div class="card"><b>Style</b><span>Dark • clean • cinematic</span></div>
       </div>
     </section>
 
     <!-- GALLERY -->
-    <div class="section-title" id="gallery">
-      <h2>🖼️ Galaxy Gallery</h2>
-      <p>Click any card to open a preview modal</p>
-    </div>
+    <section class="panel" id="gallery">
+      <div class="kicker">GALLERY</div>
+      <div class="title" style="font-size:44px">Galaxy Picks</div>
+      <div class="desc">Click any card to open a full preview.</div>
 
-    <section class="gallery">
-      <div class="tile" onclick="openGallery(1)">
-        <div class="img"></div>
-        <div class="meta">
-          <b>Emerald Nebula</b>
-          <span>Green + Cyan clouds</span>
+      <div class="gallerygrid">
+        <div class="gcard" data-title="Nebula Glow" data-desc="A bright nebula vibe with rich colors."
+             data-img="https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg">
+          <div class="gimg" style="background-image:url('https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg')"></div>
+          <div class="gmeta"><b>Nebula Glow</b><span>Tap to preview</span></div>
+        </div>
+
+        <div class="gcard" data-title="Deep Space" data-desc="A calmer deep-space look for a clean aesthetic."
+             data-img="https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg">
+          <div class="gimg" style="background-image:url('https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg')"></div>
+          <div class="gmeta"><b>Deep Space</b><span>Tap to preview</span></div>
+        </div>
+
+        <div class="gcard" data-title="Planet Horizon" data-desc="A cinematic planet scene with depth."
+             data-img="https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg">
+          <div class="gimg" style="background-image:url('https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg')"></div>
+          <div class="gmeta"><b>Planet Horizon</b><span>Tap to preview</span></div>
         </div>
       </div>
-      <div class="tile" onclick="openGallery(2)">
-        <div class="img"></div>
-        <div class="meta">
-          <b>Solar Flare</b>
-          <span>Warm orange energy</span>
-        </div>
-      </div>
-      <div class="tile" onclick="openGallery(3)">
-        <div class="img"></div>
-        <div class="meta">
-          <b>Blue Void</b>
-          <span>Deep space vibes</span>
-        </div>
-      </div>
-      <div class="tile" onclick="openGallery(4)">
-        <div class="img"></div>
-        <div class="meta">
-          <b>Purple Drift</b>
-          <span>Violet dust clouds</span>
-        </div>
-      </div>
-      <div class="tile" onclick="openGallery(5)">
-        <div class="img"></div>
-        <div class="meta">
-          <b>Ocean Aurora</b>
-          <span>Cyan + Indigo</span>
-        </div>
-      </div>
-      <div class="tile" onclick="openGallery(6)">
-        <div class="img"></div>
-        <div class="meta">
-          <b>Mint Horizon</b>
-          <span>Fresh neon glow</span>
-        </div>
-      </div>
+
+      <div class="note">Want more gallery cards? Tell me how many and I’ll add them.</div>
     </section>
 
-    <!-- ABOUT + CONTACT -->
-    <div class="section-title" id="contact">
-      <h2>📩 About & Contact</h2>
-      <p>A nice structured section (form is local demo)</p>
-    </div>
+    <!-- CONTACT -->
+    <section class="panel" id="contact">
+      <div class="kicker">CONTACT</div>
+      <div class="title" style="font-size:44px">Send a message</div>
+      <div class="desc">This form is a demo (no email). It shows a confirmation message.</div>
 
-    <section class="grid">
-      <div class="card col-6" id="about">
-        <h3>About this Website</h3>
-        <p class="small">
-          This is a full single-file website with a galaxy theme and many working features.
-          It uses only HTML, CSS, and JavaScript — no external libraries — and it works offline.
-        </p>
-        <div class="result" style="margin-top:12px">
-          ✅ Modern layout (cards + sections)<br>
-          ✅ Responsive design (mobile friendly)<br>
-          ✅ LocalStorage (to-do saved)<br>
-          ✅ Smooth scrolling + modal + toast<br>
-          ✅ Games + tools + fun content
-        </div>
-        <div class="badge-row" style="margin-top:12px">
-          <span class="badge">Tip: Press <b>/</b> to search</span>
-          <span class="badge">Tip: Press <b>Esc</b> to close modals</span>
-        </div>
+      <input class="input" id="cName" placeholder="Your name" />
+      <input class="input" id="cEmail" placeholder="Your email" />
+      <textarea rows="4" id="cMsg" placeholder="Your message"></textarea>
+
+      <div class="btnrow" style="margin-top:12px">
+        <button class="btn" id="sendBtn">📩 Send</button>
+        <button class="btn secondary" id="clearBtn">🧹 Clear</button>
       </div>
 
-      <div class="card col-6">
-        <h3>Contact (Demo Form)</h3>
-        <p class="small">This form shows a success message (it does not send emails).</p>
-
-        <label>Your Name</label>
-        <input id="cName" type="text" placeholder="Enter your name" />
-
-        <label>Your Email</label>
-        <input id="cEmail" type="email" placeholder="Enter your email" />
-
-        <label>Message</label>
-        <textarea id="cMsg" rows="4" placeholder="Write your message"></textarea>
-
-        <div class="row">
-          <button class="btn" onclick="submitContact()">Send</button>
-          <button class="btn secondary" onclick="clearContact()">Clear</button>
-        </div>
-
-        <div class="result" id="contactResult">Status: —</div>
-      </div>
+      <div class="note" id="contactStatus"></div>
     </section>
 
-    <footer>
-      © <span id="year"></span> Endless Galaxy Website • Built with HTML/CSS/JS
-    </footer>
-  </main>
+  </div>
 
   <!-- Modal -->
-  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modalbg" id="modalBg" role="dialog" aria-modal="true">
     <div class="modal">
-      <div class="modal-head">
+      <div class="modalhead">
         <div>
-          <b id="modalTitle">Modal</b>
-          <span class="tmuted" id="modalSub" style="display:block;margin-top:2px"></span>
+          <b id="mTitle">Preview</b>
+          <div style="font-size:12px;opacity:.9" id="mSub"></div>
         </div>
-        <button class="xbtn" onclick="closeModal()" aria-label="Close">✕</button>
+        <button class="xbtn" id="closeModal" aria-label="Close">✕</button>
       </div>
-      <div class="modal-body" id="modalBody"></div>
+      <div class="modalbody">
+        <div class="modalimg" id="mImg"></div>
+        <div class="modaltext" id="mDesc"></div>
+      </div>
     </div>
   </div>
 
   <!-- Toast -->
-  <div class="toast" id="toastBox">
-    <span id="toastTitle">Hello</span>
-    <span class="tmuted" id="toastDesc">This is a toast.</span>
+  <div class="toast" id="toast">
+    <div id="tTitle">Done</div>
+    <small id="tDesc">Saved.</small>
   </div>
 
   <script>
-    /* =========================================================
-       INIT
-       ========================================================= */
-    document.getElementById("year").textContent = new Date().getFullYear();
+    const navBtns = document.querySelectorAll(".navbtn[data-page]");
+    const panels = document.querySelectorAll(".panel");
 
-    // Load theme from localStorage
-    (function loadTheme(){
-      const saved = localStorage.getItem("theme");
-      if(saved === "light") document.body.classList.add("light");
-      updateThemeButton();
-    })();
+    function showPage(id){
+      panels.forEach(p => p.classList.toggle("active", p.id === id));
+      navBtns.forEach(b => b.classList.toggle("active", b.dataset.page === id));
 
-    // Init converter UI
-    updateConverterUI();
+      document.body.classList.remove("bg-home","bg-about","bg-gallery","bg-contact");
+      document.body.classList.add("bg-" + id);
 
-    // Load todos
-    loadTodos();
-
-    // Init Tic Tac Toe
-    initTTT();
-
-    // Keyboard shortcuts
-    document.addEventListener("keydown", (e)=>{
-      if(e.key === "/"){
-        e.preventDefault();
-        document.getElementById("searchInput").focus();
-      }
-      if(e.key === "Escape"){
-        closeModal();
-      }
-    });
-
-    // Search: highlight matching cards/sections
-    document.getElementById("searchInput").addEventListener("input", (e)=>{
-      const q = e.target.value.trim().toLowerCase();
-      applySearch(q);
-    });
-
-    /* =========================================================
-       THEME
-       ========================================================= */
-    function toggleTheme(){
-      document.body.classList.toggle("light");
-      localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
-      updateThemeButton();
-      toast("Theme changed", document.body.classList.contains("light") ? "Light mode enabled." : "Dark mode enabled.");
-    }
-    function updateThemeButton(){
-      const isLight = document.body.classList.contains("light");
-      document.getElementById("themeBtn").textContent = isLight ? "☀️ Light" : "🌙 Dark";
+      history.replaceState(null, "", "#" + id);
     }
 
-    // Randomize accent by changing CSS variables (small fun)
-    function randomizeTheme(){
-      const palettes = [
-        ["#22c55e", "#06b6d4", "#a78bfa"],
-        ["#f59e0b", "#ef4444", "#22c55e"],
-        ["#06b6d4", "#6366f1", "#a78bfa"],
-        ["#a78bfa", "#22c55e", "#06b6d4"],
-        ["#ef4444", "#f59e0b", "#6366f1"],
-      ];
-      const [p1,p2,acc] = palettes[Math.floor(Math.random()*palettes.length)];
-      document.documentElement.style.setProperty("--primary", p1);
-      document.documentElement.style.setProperty("--primary2", p2);
-      document.documentElement.style.setProperty("--accent", acc);
-      toast("✨ Theme", "Random colors applied!");
-    }
+    navBtns.forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
 
-    /* =========================================================
-       SEARCH
-       ========================================================= */
-    function applySearch(q){
-      const targets = [
-        {id:"tools", label:"tools"},
-        {id:"game-guess", label:"guess"},
-        {id:"game-ttt", label:"tic"},
-        {id:"fun-jokes", label:"joke"},
-        {id:"fun-quotes", label:"quote"},
-        {id:"fun-facts", label:"fact"},
-        {id:"gallery", label:"gallery"},
-        {id:"about", label:"about"},
-        {id:"contact", label:"contact"}
-      ];
+    const hash = location.hash.replace("#","");
+    if(hash && document.getElementById(hash)) showPage(hash);
 
-      // reset faint styling
-      document.querySelectorAll(".card, .tile, .hero").forEach(el=>{
-        el.style.opacity = "";
-        el.style.filter = "";
-      });
+    document.getElementById("startBtn").addEventListener("click", () => showPage("about"));
+    document.getElementById("exploreBtn").addEventListener("click", () => showPage("gallery"));
 
-      if(!q) return;
-
-      targets.forEach(t=>{
-        const el = document.getElementById(t.id);
-        if(!el) return;
-        const match = el.textContent.toLowerCase().includes(q) || t.label.includes(q);
-        if(!match){
-          el.style.opacity = ".35";
-          el.style.filter = "grayscale(0.4)";
-        }else{
-          el.style.opacity = "1";
-          el.style.filter = "none";
-        }
-      });
-    }
-
-    /* =========================================================
-       MODAL + TOAST
-       ========================================================= */
-    function openModal(title, html, subtitle=""){
-      document.getElementById("modalTitle").textContent = title;
-      document.getElementById("modalSub").textContent = subtitle;
-      document.getElementById("modalBody").innerHTML = html;
-      document.getElementById("modalBackdrop").classList.add("show");
-    }
-    function closeModal(){
-      document.getElementById("modalBackdrop").classList.remove("show");
-    }
-    function openHelp(){
-      openModal(
-        "Help & Shortcuts",
-        `
-          <div class="card" style="box-shadow:none;background:rgba(255,255,255,.04)">
-            <h3 style="margin-top:0">Keyboard</h3>
-            <p class="small">• Press <b>/</b> to focus search</p>
-            <p class="small">• Press <b>Esc</b> to close modals</p>
-            <hr style="border:none;border-top:${getComputedStyle(document.documentElement).getPropertyValue('--border')};opacity:.6">
-            <h3>Tips</h3>
-            <p class="small">• To-do list saves automatically</p>
-            <p class="small">• Use Random Theme for cool colors</p>
-            <p class="small">• Click gallery cards for preview</p>
-          </div>
-        `,
-        "Everything works offline"
-      );
-    }
-
+    // Toast helper
     let toastTimer = null;
-    function toast(title, desc=""){
-      const box = document.getElementById("toastBox");
-      document.getElementById("toastTitle").textContent = title;
-      document.getElementById("toastDesc").textContent = desc;
+    function toast(title, desc){
+      const box = document.getElementById("toast");
+      document.getElementById("tTitle").textContent = title;
+      document.getElementById("tDesc").textContent = desc || "";
       box.classList.add("show");
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=>box.classList.remove("show"), 2200);
+      toastTimer = setTimeout(()=> box.classList.remove("show"), 2200);
     }
 
-    /* =========================================================
-       TOOLS: Tabs
-       ========================================================= */
-    function showTool(name){
-      document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-      document.querySelector(`.tab[data-tab="${name}"]`).classList.add("active");
+    // Gallery modal
+    const modalBg = document.getElementById("modalBg");
+    const mTitle = document.getElementById("mTitle");
+    const mSub = document.getElementById("mSub");
+    const mDesc = document.getElementById("mDesc");
+    const mImg = document.getElementById("mImg");
 
-      document.getElementById("tool-calc").classList.toggle("hidden", name !== "calc");
-      document.getElementById("tool-convert").classList.toggle("hidden", name !== "convert");
-      document.getElementById("tool-todo").classList.toggle("hidden", name !== "todo");
-      document.getElementById("tool-timer").classList.toggle("hidden", name !== "timer");
-
-      toast("Opened " + name, "Tool is ready.");
+    function openModal(title, img, desc){
+      mTitle.textContent = title;
+      mSub.textContent = "Gallery preview";
+      mDesc.textContent = desc;
+      mImg.style.backgroundImage = `url('${img}')`;
+      modalBg.classList.add("show");
     }
+    function closeModal(){ modalBg.classList.remove("show"); }
 
-    /* =========================================================
-       Calculator
-       ========================================================= */
-    function calculate(){
-      const n1 = parseFloat(document.getElementById("num1").value);
-      const n2 = parseFloat(document.getElementById("num2").value);
-      const op = document.getElementById("op").value;
-
-      if(Number.isNaN(n1) || Number.isNaN(n2)){
-        setCalc("Result: Please enter both numbers.");
-        return;
-      }
-
-      let res;
-      if(op === "+") res = n1 + n2;
-      else if(op === "-") res = n1 - n2;
-      else if(op === "*") res = n1 * n2;
-      else if(op === "/"){
-        if(n2 === 0){ setCalc("Result: Cannot divide by zero."); return; }
-        res = n1 / n2;
-      } else if(op === "^"){
-        res = Math.pow(n1, n2);
-      }
-
-      const pretty = (Math.abs(res) % 1 !== 0) ? res.toFixed(8).replace(/0+$/,"").replace(/\.$/,"") : res;
-      setCalc("Result: " + pretty);
-      toast("Calculator", "Done ✅");
-    }
-
-    function setCalc(msg){
-      document.getElementById("calcResult").textContent = msg;
-    }
-
-    function clearCalc(){
-      document.getElementById("num1").value = "";
-      document.getElementById("num2").value = "";
-      document.getElementById("op").value = "+";
-      setCalc("Result: —");
-    }
-
-    /* =========================================================
-       Converter
-       ========================================================= */
-    const convUnits = {
-      temp: ["Celsius (°C)", "Fahrenheit (°F)", "Kelvin (K)"],
-      length: ["Meters (m)", "Kilometers (km)", "Feet (ft)", "Inches (in)"],
-      weight: ["Kilograms (kg)", "Grams (g)", "Pounds (lb)"]
-    };
-
-    function updateConverterUI(){
-      const type = document.getElementById("convType").value;
-      const from = document.getElementById("convFrom");
-      const to = document.getElementById("convTo");
-      from.innerHTML = "";
-      to.innerHTML = "";
-      convUnits[type].forEach(u=>{
-        const o1 = document.createElement("option");
-        o1.value = u; o1.textContent = u;
-        const o2 = document.createElement("option");
-        o2.value = u; o2.textContent = u;
-        from.appendChild(o1);
-        to.appendChild(o2);
+    document.querySelectorAll(".gcard").forEach(card=>{
+      card.addEventListener("click", ()=>{
+        openModal(card.dataset.title, card.dataset.img, card.dataset.desc);
       });
-      to.selectedIndex = Math.min(1, convUnits[type].length-1);
-      document.getElementById("convResult").textContent = "Converted: —";
-    }
+    });
 
-    function resetConverter(){
-      document.getElementById("convValue").value = "";
-      document.getElementById("convType").value = "temp";
-      updateConverterUI();
-    }
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    modalBg.addEventListener("click", (e)=>{ if(e.target === modalBg) closeModal(); });
+    document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
 
-    function convert(){
-      const type = document.getElementById("convType").value;
-      const v = parseFloat(document.getElementById("convValue").value);
-      const from = document.getElementById("convFrom").value;
-      const to = document.getElementById("convTo").value;
-
-      if(Number.isNaN(v)){
-        document.getElementById("convResult").textContent = "Converted: Please enter a value.";
-        return;
-      }
-      if(from === to){
-        document.getElementById("convResult").textContent = "Converted: Same units selected.";
-        return;
-      }
-
-      let out = v;
-
-      if(type === "temp"){
-        // convert from -> Celsius
-        let c;
-        if(from.includes("Celsius")) c = v;
-        else if(from.includes("Fahrenheit")) c = (v - 32) * 5/9;
-        else if(from.includes("Kelvin")) c = v - 273.15;
-
-        // Celsius -> to
-        if(to.includes("Celsius")) out = c;
-        else if(to.includes("Fahrenheit")) out = (c * 9/5) + 32;
-        else if(to.includes("Kelvin")) out = c + 273.15;
-      }
-
-      if(type === "length"){
-        // to meters
-        const toMeters = (val, unit)=>{
-          if(unit.includes("Meters")) return val;
-          if(unit.includes("Kilometers")) return val * 1000;
-          if(unit.includes("Feet")) return val * 0.3048;
-          if(unit.includes("Inches")) return val * 0.0254;
-          return val;
-        };
-        const fromMeters = (val, unit)=>{
-          if(unit.includes("Meters")) return val;
-          if(unit.includes("Kilometers")) return val / 1000;
-          if(unit.includes("Feet")) return val / 0.3048;
-          if(unit.includes("Inches")) return val / 0.0254;
-          return val;
-        };
-        const m = toMeters(v, from);
-        out = fromMeters(m, to);
-      }
-
-      if(type === "weight"){
-        // to kg
-        const toKg = (val, unit)=>{
-          if(unit.includes("Kilograms")) return val;
-          if(unit.includes("Grams")) return val / 1000;
-          if(unit.includes("Pounds")) return val * 0.45359237;
-          return val;
-        };
-        const fromKg = (val, unit)=>{
-          if(unit.includes("Kilograms")) return val;
-          if(unit.includes("Grams")) return val * 1000;
-          if(unit.includes("Pounds")) return val / 0.45359237;
-          return val;
-        };
-        const kg = toKg(v, from);
-        out = fromKg(kg, to);
-      }
-
-      const pretty = (Math.abs(out) % 1 !== 0) ? out.toFixed(6).replace(/0+$/,"").replace(/\.$/,"") : out;
-      document.getElementById("convResult").textContent = `Converted: ${pretty}`;
-      toast("Converter", "Done ✅");
-    }
-
-    /* =========================================================
-       TODO (localStorage)
-       ========================================================= */
-    function loadTodos(){
-      const raw = localStorage.getItem("todos");
-      const todos = raw ? JSON.parse(raw) : [];
-      renderTodos(todos);
-    }
-
-    function saveTodos(todos){
-      localStorage.setItem("todos", JSON.stringify(todos));
-    }
-
-    function addTodo(){
-      const input = document.getElementById("todoInput");
-      const text = input.value.trim();
-      if(!text){
-        toast("To-do", "Please type a task.");
-        return;
-      }
-      const raw = localStorage.getItem("todos");
-      const todos = raw ? JSON.parse(raw) : [];
-      todos.unshift({ text, done:false, id: Date.now() });
-      saveTodos(todos);
-      renderTodos(todos);
-      input.value = "";
-      toast("To-do", "Task added ✅");
-    }
-
-    function toggleTodo(id){
-      const todos = JSON.parse(localStorage.getItem("todos") || "[]");
-      const idx = todos.findIndex(t=>t.id === id);
-      if(idx >= 0){
-        todos[idx].done = !todos[idx].done;
-        saveTodos(todos);
-        renderTodos(todos);
-      }
-    }
-
-    function removeTodo(id){
-      let todos = JSON.parse(localStorage.getItem("todos") || "[]");
-      todos = todos.filter(t=>t.id !== id);
-      saveTodos(todos);
-      renderTodos(todos);
-      toast("To-do", "Removed.");
-    }
-
-    function clearTodos(){
-      localStorage.setItem("todos", "[]");
-      renderTodos([]);
-      toast("To-do", "Cleared all.");
-    }
-
-    function renderTodos(todos){
-      const box = document.getElementById("todoBox");
-      if(!todos.length){
-        box.innerHTML = "No tasks yet.";
-        return;
-      }
-      box.innerHTML = todos.map(t=>{
-        const style = t.done ? 'style="text-decoration:line-through;opacity:.75"' : '';
-        return `
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border-radius:14px;border:${getComputedStyle(document.documentElement).getPropertyValue('--border')};background:rgba(255,255,255,.04);margin-bottom:10px">
-            <div ${style} onclick="toggleTodo(${t.id})" style="cursor:pointer;flex:1">
-              ${t.done ? "✅" : "⬜"} ${escapeHtml(t.text)}
-            </div>
-            <button class="pill" style="padding:8px 10px" onclick="removeTodo(${t.id})">🗑️</button>
-          </div>
-        `;
-      }).join("");
-    }
-
-    function escapeHtml(s){
-      return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
-    }
-
-    /* =========================================================
-       TIMER
-       ========================================================= */
-    let timerInterval = null;
-    let remaining = 0;
-    let paused = true;
-
-    function startTimer(){
-      const m = parseInt(document.getElementById("timerMin").value || "0", 10);
-      const s = parseInt(document.getElementById("timerSec").value || "0", 10);
-
-      if(paused && remaining === 0){
-        remaining = (m*60) + s;
-      }
-      if(remaining <= 0){
-        toast("Timer", "Enter minutes/seconds first.");
-        return;
-      }
-      paused = false;
-
-      if(timerInterval) clearInterval(timerInterval);
-      timerInterval = setInterval(()=>{
-        if(paused) return;
-        remaining--;
-        updateTimerUI();
-        if(remaining <= 0){
-          clearInterval(timerInterval);
-          timerInterval = null;
-          remaining = 0;
-          paused = true;
-          updateTimerUI();
-          toast("⏰ Time!", "Timer finished.");
-        }
-      }, 1000);
-
-      updateTimerUI();
-      toast("Timer", "Started ✅");
-    }
-
-    function pauseTimer(){
-      paused = true;
-      toast("Timer", "Paused.");
-    }
-
-    function resetTimer(){
-      paused = true;
-      remaining = 0;
-      if(timerInterval) clearInterval(timerInterval);
-      timerInterval = null;
-      document.getElementById("timerMin").value = "";
-      document.getElementById("timerSec").value = "";
-      updateTimerUI();
-      toast("Timer", "Reset.");
-    }
-
-    function updateTimerUI(){
-      const mm = String(Math.floor(remaining/60)).padStart(2,"0");
-      const ss = String(remaining%60).padStart(2,"0");
-      document.getElementById("timerDisplay").textContent = `Timer: ${mm}:${ss}`;
-    }
-
-    /* =========================================================
-       GAME: Guess the number
-       ========================================================= */
-    let secret = Math.floor(Math.random() * 20) + 1;
-    let tries = 0;
-
-    function checkGuess(){
-      const guess = parseInt(document.getElementById("guessInput").value, 10);
-      if(Number.isNaN(guess) || guess < 1 || guess > 20){
-        setGame("Please enter a number between 1 and 20.");
-        return;
-      }
-      tries++;
-      document.getElementById("attempts").textContent = tries;
-
-      if(guess === secret){
-        setGame(`🎉 Correct! The number was ${secret}. Click "New Game" to play again.`);
-        toast("Game", "You won!");
-      } else if(guess < secret){
-        setGame("Too low! Try again.");
-      } else {
-        setGame("Too high! Try again.");
-      }
-    }
-
-    function resetGame(){
-      secret = Math.floor(Math.random() * 20) + 1;
-      tries = 0;
-      document.getElementById("attempts").textContent = tries;
-      document.getElementById("guessInput").value = "";
-      setGame("New game started! Make a guess!");
-      toast("Game", "New game ✅");
-    }
-
-    function reveal(){
-      setGame(`🤫 The answer is: ${secret}. Now try to guess it!`);
-    }
-
-    function setGame(msg){
-      document.getElementById("gameMessage").textContent = msg;
-    }
-
-    /* =========================================================
-       GAME: Tic Tac Toe (optional AI)
-       ========================================================= */
-    let board = Array(9).fill(null);
-    let currentPlayer = "X";
-    let aiMode = false;
-
-    function initTTT(){
-      const grid = document.getElementById("tttGrid");
-      grid.innerHTML = "";
-      for(let i=0;i<9;i++){
-        const c = document.createElement("div");
-        c.className = "cell";
-        c.setAttribute("role","button");
-        c.setAttribute("aria-label","Cell " + (i+1));
-        c.addEventListener("click", ()=> playTTT(i));
-        grid.appendChild(c);
-      }
-      renderTTT();
-    }
-
-    function renderTTT(){
-      const cells = document.querySelectorAll(".cell");
-      cells.forEach((c,i)=> c.textContent = board[i] ? board[i] : "");
-      const status = document.getElementById("tttStatus");
-      const winner = getWinner(board);
-
-      if(winner){
-        status.textContent = winner === "draw" ? "Draw! 😄" : `Winner: ${winner} 🎉`;
-      } else {
-        status.textContent = `Turn: ${currentPlayer}` + (aiMode ? " (AI on)" : "");
-      }
-    }
-
-    function playTTT(i){
-      const winner = getWinner(board);
-      if(winner) return;
-
-      if(board[i]) return;
-
-      board[i] = currentPlayer;
-      currentPlayer = (currentPlayer === "X") ? "O" : "X";
-      renderTTT();
-
-      if(aiMode && currentPlayer === "O" && !getWinner(board)){
-        setTimeout(()=>{
-          const move = bestMove(board, "O");
-          if(move !== -1){
-            board[move] = "O";
-            currentPlayer = "X";
-            renderTTT();
-          }
-        }, 250);
-      }
-    }
-
-    function resetTTT(){
-      board = Array(9).fill(null);
-      currentPlayer = "X";
-      renderTTT();
-      toast("Tic-Tac-Toe", "Reset ✅");
-    }
-
-    function toggleAIMode(){
-      aiMode = !aiMode;
-      document.getElementById("aiLabel").textContent = aiMode ? "ON" : "OFF";
-      renderTTT();
-      toast("AI Mode", aiMode ? "AI enabled (O plays)." : "AI disabled.");
-    }
-
-    function getWinner(b){
-      const lines = [
-        [0,1,2],[3,4,5],[6,7,8],
-        [0,3,6],[1,4,7],[2,5,8],
-        [0,4,8],[2,4,6]
-      ];
-      for(const [a,c,d] of lines){
-        if(b[a] && b[a] === b[c] && b[a] === b[d]) return b[a];
-      }
-      if(b.every(x=>x)) return "draw";
-      return null;
-    }
-
-    // Simple AI: win -> block -> random
-    function bestMove(b, player){
-      const opponent = player === "X" ? "O" : "X";
-
-      // try winning move
-      for(let i=0;i<9;i++){
-        if(!b[i]){
-          const copy = b.slice();
-          copy[i] = player;
-          if(getWinner(copy) === player) return i;
-        }
-      }
-      // block opponent
-      for(let i=0;i<9;i++){
-        if(!b[i]){
-          const copy = b.slice();
-          copy[i] = opponent;
-          if(getWinner(copy) === opponent) return i;
-        }
-      }
-      // center
-      if(!b[4]) return 4;
-
-      // random corners/edges
-      const choices = [0,2,6,8,1,3,5,7].filter(i=>!b[i]);
-      if(!choices.length) return -1;
-      return choices[Math.floor(Math.random()*choices.length)];
-    }
-
-    /* =========================================================
-       FUN: Jokes / Quotes / Facts
-       ========================================================= */
-    const jokes = [
-      "Why don’t programmers like nature? It has too many bugs.",
-      "Why did the computer go to the doctor? Because it had a virus!",
-      "Why do programmers prefer dark mode? Because light attracts bugs.",
-      "Why was the JavaScript developer sad? Because they didn’t know how to 'null' their feelings.",
-      "I told my computer I needed a break… it said: 'No problem — I’ll go to sleep.'",
-      "What do you call 8 hobbits? A hobbyte.",
-      "Why did the scarecrow get promoted? Because he was outstanding in his field!"
-    ];
-
-    const quotes = [
-      "Dream big. Start small. Act now.",
-      "Discipline beats motivation.",
-      "Your future is created by what you do today.",
-      "Consistency is the real superpower.",
-      "Make it simple, but significant.",
-      "Small progress is still progress.",
-      "Focus on the next step, not the whole staircase."
-    ];
-
-    const facts = [
-      "A day on Venus is longer than a year on Venus.",
-      "Neutron stars are so dense that a teaspoon would weigh billions of tons.",
-      "The Milky Way is estimated to have over 100 billion stars.",
-      "Jupiter has the shortest day of all planets (about 10 hours).",
-      "Saturn could float in water because it’s mostly gas.",
-      "Space is completely silent because there’s no air for sound to travel.",
-      "The Sun contains 99.8% of the Solar System’s mass."
-    ];
-
-    function randomJoke(){
-      const pick = jokes[Math.floor(Math.random()*jokes.length)];
-      document.getElementById("jokeBox").textContent = "Joke: " + pick;
-      toast("Joke", "Generated 😄");
-    }
-    function randomQuote(){
-      const pick = quotes[Math.floor(Math.random()*quotes.length)];
-      document.getElementById("quoteBox").textContent = "Quote: " + pick;
-      toast("Quote", "Generated ✨");
-    }
-    function randomFact(){
-      const pick = facts[Math.floor(Math.random()*facts.length)];
-      document.getElementById("factBox").textContent = "Fact: " + pick;
-      toast("Fact", "Generated 🪐");
-    }
-
-    async function copyText(id){
-      const box = document.getElementById(id);
-      const text = box.textContent.replace(/^Joke:\s|^Quote:\s|^Fact:\s/, "").trim();
-      if(!text || text === "—"){
-        toast("Copy", "Generate something first 🙂");
-        return;
-      }
-      try{
-        await navigator.clipboard.writeText(text);
-        toast("Copied ✅", "Text copied to clipboard.");
-      }catch(e){
-        toast("Copy blocked", "Use Live Server or allow clipboard.");
-      }
-    }
-
-    /* =========================================================
-       GALLERY
-       ========================================================= */
-    function openGallery(n){
-      const titles = {
-        1:["Emerald Nebula","A calm green-cyan nebula drifting in the void."],
-        2:["Solar Flare","Warm orange energy bursting into space."],
-        3:["Blue Void","Deep cold blue tones — the feeling of endless space."],
-        4:["Purple Drift","Violet dust and distant stars."],
-        5:["Ocean Aurora","Cyan auroras and dark oceans of space."],
-        6:["Mint Horizon","Fresh mint glow with cosmic light."]
-      };
-      const [t, desc] = titles[n] || ["Galaxy", "A galaxy preview card."];
-      openModal(
-        t,
-        `
-          <div class="card" style="box-shadow:none;background:rgba(255,255,255,.04)">
-            <p class="small" style="margin-top:0">${desc}</p>
-            <div style="height:220px;border-radius:18px;border:${getComputedStyle(document.documentElement).getPropertyValue('--border')};background:
-              radial-gradient(900px 400px at 20% 10%, rgba(34,197,94,.25), transparent 55%),
-              radial-gradient(900px 400px at 85% 25%, rgba(6,182,212,.22), transparent 55%),
-              radial-gradient(900px 400px at 60% 80%, rgba(167,139,250,.22), transparent 55%),
-              linear-gradient(135deg, rgba(15,23,42,.9), rgba(2,6,23,.9));
-              margin-top:12px;overflow:hidden;position:relative">
-              <div style="position:absolute;inset:0;opacity:.7;background-image:
-                radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.9), transparent 40%),
-                radial-gradient(1px 1px at 120px 90px, rgba(255,255,255,.7), transparent 40%),
-                radial-gradient(2px 2px at 220px 150px, rgba(255,255,255,.8), transparent 40%);
-                background-size:260px 180px;background-repeat:repeat"></div>
-            </div>
-            <div class="row" style="margin-top:12px">
-              <button class="btn" onclick="closeModal()">Nice!</button>
-              <button class="btn secondary" onclick="randomizeTheme()">Change theme</button>
-            </div>
-          </div>
-        `,
-        "Gallery preview"
-      );
-    }
-
-    /* =========================================================
-       CONTACT FORM (demo)
-       ========================================================= */
-    function submitContact(){
+    // Contact demo
+    const status = document.getElementById("contactStatus");
+    document.getElementById("sendBtn").addEventListener("click", () => {
       const name = document.getElementById("cName").value.trim();
       const email = document.getElementById("cEmail").value.trim();
       const msg = document.getElementById("cMsg").value.trim();
-      const out = document.getElementById("contactResult");
 
       if(!name || !email || !msg){
-        out.textContent = "Status: Please fill all fields.";
-        toast("Contact", "Fill all fields.");
+        status.textContent = "Please fill all fields.";
+        toast("Missing info", "Fill all fields first.");
         return;
       }
       if(!email.includes("@")){
-        out.textContent = "Status: Please enter a valid email.";
-        toast("Contact", "Invalid email.");
+        status.textContent = "Please enter a valid email.";
+        toast("Invalid email", "Check your email address.");
         return;
       }
-      out.textContent = `Status: Thanks ${name}! Message saved locally (demo). ✅`;
 
-      // store last contact as demo
-      localStorage.setItem("lastContact", JSON.stringify({name,email,msg,at:Date.now()}));
-      toast("Sent ✅", "Demo form submitted.");
-    }
+      status.textContent = "Message sent (demo). ✅";
+      toast("Sent ✅", "Your message was submitted (demo).");
+    });
 
-    function clearContact(){
+    document.getElementById("clearBtn").addEventListener("click", () => {
       document.getElementById("cName").value = "";
       document.getElementById("cEmail").value = "";
       document.getElementById("cMsg").value = "";
-      document.getElementById("contactResult").textContent = "Status: —";
-    }
+      status.textContent = "";
+      toast("Cleared", "Form cleared.");
+    });
   </script>
 </body>
 </html>
