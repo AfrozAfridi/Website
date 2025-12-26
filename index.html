@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Endless Galaxy</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:"Segoe UI",sans-serif; }
@@ -33,32 +33,14 @@
     body.bg-gallery{ --bg-img: url("https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg"); }
     body.bg-contact{ --bg-img: url("https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg"); }
 
-    /* ✨ Star overlay */
-    .stars{
+    /* ✅ Animated background canvas (stars) */
+    #stars{
       position:fixed;
       inset:0;
+      z-index:-2; /* behind everything */
+      display:block;
+      background: transparent;
       pointer-events:none;
-      z-index:0;
-      opacity:.55;
-      background-image:
-        radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,.9), transparent 40%),
-        radial-gradient(1px 1px at 80px 120px, rgba(255,255,255,.75), transparent 40%),
-        radial-gradient(1px 1px at 140px 60px, rgba(255,255,255,.65), transparent 40%),
-        radial-gradient(2px 2px at 220px 140px, rgba(255,255,255,.75), transparent 40%),
-        radial-gradient(1px 1px at 300px 90px, rgba(255,255,255,.6), transparent 40%),
-        radial-gradient(2px 2px at 420px 160px, rgba(255,255,255,.75), transparent 40%);
-      background-size: 520px 320px;
-      animation: drift 90s linear infinite;
-      filter: drop-shadow(0 0 4px rgba(255,255,255,.12));
-    }
-    .stars.s2{
-      opacity:.32;
-      background-size: 780px 520px;
-      animation-duration: 140s;
-    }
-    @keyframes drift{
-      from{ transform: translateY(0); }
-      to{ transform: translateY(-1200px); }
     }
 
     nav{
@@ -300,9 +282,7 @@
       font-weight:900;
       font-size:16px;
     }
-    .modalbody{
-      padding:14px;
-    }
+    .modalbody{ padding:14px; }
     .modalimg{
       width:100%;
       height: 420px;
@@ -369,8 +349,8 @@
 </head>
 
 <body class="bg-home">
-  <div class="stars"></div>
-  <div class="stars s2"></div>
+  <!-- ✅ Animated Background -->
+  <canvas id="stars"></canvas>
 
   <nav>
     <h1>Endless Galaxy</h1>
@@ -402,7 +382,7 @@
         <span class="chip">🧠 Evolving project</span>
       </div>
 
-      <div class="note">Tip: use the menu — each page has its own galaxy background.</div>
+      <div class="note">Tip: each page has its own galaxy background + animated stars.</div>
     </section>
 
     <!-- ABOUT -->
@@ -504,6 +484,57 @@
   </div>
 
   <script>
+    // ✅ Animated star background (canvas)
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+
+    let w, h;
+    let stars = [];
+    const STAR_COUNT = 220;
+
+    function resize(){
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      createStars();
+    }
+    window.addEventListener("resize", resize);
+
+    function createStars(){
+      stars = [];
+      for(let i=0;i<STAR_COUNT;i++){
+        stars.push({
+          x: Math.random()*w,
+          y: Math.random()*h,
+          r: Math.random()*1.6 + 0.2,
+          s: Math.random()*0.65 + 0.15,
+          a: Math.random()*0.7 + 0.2
+        });
+      }
+    }
+
+    function drawStars(){
+      ctx.clearRect(0,0,w,h);
+      for(const s of stars){
+        ctx.globalAlpha = s.a;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+
+        s.y += s.s;
+        if(s.y > h){
+          s.y = -5;
+          s.x = Math.random()*w;
+        }
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(drawStars);
+    }
+
+    resize();
+    drawStars();
+
+    // --- Page switching (single-file "multi-page") ---
     const navBtns = document.querySelectorAll(".navbtn[data-page]");
     const panels = document.querySelectorAll(".panel");
 
