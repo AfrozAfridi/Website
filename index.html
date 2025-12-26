@@ -8,9 +8,12 @@
   <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:"Segoe UI",sans-serif; }
 
-    /* default background (Home) */
     :root{
-      --bg-img: url("https://cdn.eso.org/images/wallpaper5/eso0932a.jpg");
+      --bg-img: url("https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg");
+      --pink:#ff2f6d;
+      --pink2:#ff4b84;
+      --glass: rgba(0,0,0,.28);
+      --border: 1px solid rgba(255,255,255,.14);
     }
 
     body{
@@ -19,40 +22,61 @@
         linear-gradient(rgba(30,0,60,.72), rgba(30,0,60,.72)),
         var(--bg-img) no-repeat center/cover;
       color:#fff;
-      transition: background 300ms ease;
+      transition: background 350ms ease;
       overflow-x:hidden;
+      position:relative;
     }
 
     /* Different background for each section */
-  body.bg-home{
-  --bg-img: url("https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg");
-}
+    body.bg-home{ --bg-img: url("https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg"); }
+    body.bg-about{ --bg-img: url("https://images.pexels.com/photos/6498990/pexels-photo-6498990.jpeg"); }
+    body.bg-gallery{ --bg-img: url("https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg"); }
+    body.bg-contact{ --bg-img: url("https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg"); }
 
-body.bg-about{
-  --bg-img: url("https://images.pexels.com/photos/6498990/pexels-photo-6498990.jpeg");
-}
-
-body.bg-gallery{
-  --bg-img: url("https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg");
-}
-
-body.bg-contact{
-  --bg-img: url("https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg");
-}
-
+    /* ✨ Star overlay */
+    .stars{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+      opacity:.55;
+      background-image:
+        radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,.9), transparent 40%),
+        radial-gradient(1px 1px at 80px 120px, rgba(255,255,255,.75), transparent 40%),
+        radial-gradient(1px 1px at 140px 60px, rgba(255,255,255,.65), transparent 40%),
+        radial-gradient(2px 2px at 220px 140px, rgba(255,255,255,.75), transparent 40%),
+        radial-gradient(1px 1px at 300px 90px, rgba(255,255,255,.6), transparent 40%),
+        radial-gradient(2px 2px at 420px 160px, rgba(255,255,255,.75), transparent 40%);
+      background-size: 520px 320px;
+      animation: drift 90s linear infinite;
+      filter: drop-shadow(0 0 4px rgba(255,255,255,.12));
+    }
+    .stars.s2{
+      opacity:.32;
+      background-size: 780px 520px;
+      animation-duration: 140s;
+    }
+    @keyframes drift{
+      from{ transform: translateY(0); }
+      to{ transform: translateY(-1200px); }
+    }
 
     nav{
+      position:relative;
+      z-index:2;
       display:flex;
       justify-content:space-between;
       align-items:center;
       padding: 22px 70px;
       gap:20px;
+      backdrop-filter: blur(10px);
     }
 
     nav h1{
       font-size:28px;
       letter-spacing:2px;
       user-select:none;
+      text-shadow: 0 10px 40px rgba(0,0,0,.35);
     }
 
     nav ul{
@@ -73,56 +97,76 @@ body.bg-contact{
       cursor:pointer;
       font-weight:600;
       transition:.25s;
+      position:relative;
     }
     .navbtn:hover{ background: rgba(255,255,255,.18); transform: translateY(-1px); }
     .navbtn.active{
-      background:#ff2f6d;
+      background: var(--pink);
       border-color: transparent;
       box-shadow: 0 12px 28px rgba(255,47,109,.25);
     }
 
     .wrap{
+      position:relative;
+      z-index:2;
       padding: 30px 70px 70px;
       max-width: 1150px;
     }
 
     .panel{
       display:none;
-      max-width: 720px;
+      max-width: 780px;
       padding: 22px 22px;
       border-radius: 18px;
-      background: rgba(0,0,0,.28);
-      border: 1px solid rgba(255,255,255,.14);
+      background: var(--glass);
+      border: var(--border);
       backdrop-filter: blur(10px);
       box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      animation: pop .35s ease;
     }
     .panel.active{ display:block; }
+
+    @keyframes pop{
+      from{ transform: translateY(10px); opacity:0; }
+      to{ transform: translateY(0); opacity:1; }
+    }
 
     .kicker{
       font-size: 15px;
       letter-spacing: 3px;
       opacity:.85;
       margin-bottom: 12px;
+      text-transform: uppercase;
     }
 
     .title{
       font-size: 64px;
       line-height: 1.05;
       margin-bottom: 14px;
+      text-shadow: 0 18px 60px rgba(0,0,0,.35);
     }
 
     .desc{
       font-size: 18px;
       opacity:.92;
-      line-height: 1.6;
-      margin-bottom: 22px;
-      max-width: 600px;
+      line-height: 1.65;
+      margin-bottom: 18px;
+      max-width: 640px;
+    }
+
+    .btnrow{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top: 14px;
     }
 
     .btn{
-      display:inline-block;
-      padding: 14px 28px;
-      background: #ff2f6d;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 14px 22px;
+      background: var(--pink);
       color: #fff;
       border: none;
       border-radius: 999px;
@@ -131,23 +175,167 @@ body.bg-contact{
       transition: .25s;
       text-decoration:none;
       font-weight:700;
+      box-shadow: 0 18px 40px rgba(255,47,109,.18);
     }
-    .btn:hover{ background:#ff4b84; transform: scale(1.03); }
+    .btn:hover{ background: var(--pink2); transform: translateY(-1px) scale(1.02); }
+
+    .btn.secondary{
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow:none;
+    }
+    .btn.secondary:hover{
+      background: rgba(255,255,255,.18);
+      transform: translateY(-1px);
+    }
+
+    .chiprow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
+    .chip{
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      font-size:12px;
+      font-weight:700;
+      opacity:.92;
+    }
 
     .cardgrid{
       display:grid;
       grid-template-columns: repeat(3, 1fr);
       gap:12px;
-      margin-top: 10px;
+      margin-top: 12px;
     }
     .card{
       padding:14px;
       border-radius: 16px;
       background: rgba(255,255,255,.08);
       border: 1px solid rgba(255,255,255,.14);
+      transition: transform .18s ease, background .18s ease;
+    }
+    .card:hover{
+      transform: translateY(-3px);
+      background: rgba(255,255,255,.11);
     }
     .card b{ display:block; margin-bottom:6px; }
     .card span{ opacity:.9; font-size:14px; line-height:1.4; }
+
+    /* Gallery cards */
+    .gallerygrid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      margin-top: 12px;
+    }
+    .gcard{
+      border-radius:16px;
+      border: 1px solid rgba(255,255,255,.14);
+      overflow:hidden;
+      cursor:pointer;
+      background: rgba(255,255,255,.08);
+      transition: transform .18s ease, filter .18s ease;
+      position:relative;
+      min-height: 160px;
+    }
+    .gcard:hover{ transform: translateY(-3px); filter: brightness(1.05); }
+    .gimg{
+      position:absolute; inset:0;
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.05);
+      opacity:.95;
+    }
+    .gmeta{
+      position:absolute;
+      left:10px; right:10px; bottom:10px;
+      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      border-radius: 14px;
+      padding:10px;
+    }
+    .gmeta b{ display:block; font-size:14px; margin-bottom:2px; }
+    .gmeta span{ font-size:12px; opacity:.9; }
+
+    /* Modal */
+    .modalbg{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.6);
+      z-index:99;
+      padding:16px;
+    }
+    .modalbg.show{ display:flex; }
+    .modal{
+      width:min(820px, 100%);
+      border-radius:18px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 30px 80px rgba(0,0,0,.55);
+    }
+    .modalhead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+    }
+    .xbtn{
+      width:42px;height:42px;
+      border-radius:12px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color:#fff;
+      cursor:pointer;
+      font-weight:900;
+      font-size:16px;
+    }
+    .modalbody{
+      padding:14px;
+    }
+    .modalimg{
+      width:100%;
+      height: 420px;
+      border-radius:16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background-size: cover;
+      background-position: center;
+    }
+    .modaltext{
+      margin-top: 10px;
+      opacity:.95;
+      line-height:1.6;
+      font-size:14px;
+    }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      z-index:120;
+      display:none;
+      min-width: 240px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      font-weight:800;
+    }
+    .toast.show{ display:block; animation: pop .25s ease; }
+    .toast small{ display:block; opacity:.9; font-weight:700; margin-top:2px; }
 
     .input, textarea{
       width:100%;
@@ -174,15 +362,18 @@ body.bg-contact{
       nav{ padding: 18px 18px; }
       .wrap{ padding: 22px 18px 70px; }
       .title{ font-size: 44px; }
-      .cardgrid{ grid-template-columns: 1fr; }
+      .cardgrid, .gallerygrid{ grid-template-columns: 1fr; }
+      .modalimg{ height: 280px; }
     }
   </style>
 </head>
 
 <body class="bg-home">
+  <div class="stars"></div>
+  <div class="stars s2"></div>
+
   <nav>
     <h1>Endless Galaxy</h1>
-
     <ul>
       <li><button class="navbtn active" data-page="home">Home</button></li>
       <li><button class="navbtn" data-page="about">About</button></li>
@@ -198,11 +389,23 @@ body.bg-contact{
       <div class="kicker">WELCOME TO</div>
       <div class="title">Endless Galaxy</div>
       <div class="desc">This galaxy belongs to Endless — my vision, my world.</div>
-      <button class="btn" id="startBtn">Get Started</button>
-      <div class="note">Tip: Use the menu to switch pages (background changes too).</div>
+
+      <div class="btnrow">
+        <button class="btn" id="startBtn">🚀 Get Started</button>
+        <button class="btn secondary" id="exploreBtn">✨ Explore Gallery</button>
+      </div>
+
+      <div class="chiprow">
+        <span class="chip">🌌 Cinematic</span>
+        <span class="chip">⚡ Fast</span>
+        <span class="chip">📱 Mobile-friendly</span>
+        <span class="chip">🧠 Evolving project</span>
+      </div>
+
+      <div class="note">Tip: use the menu — each page has its own galaxy background.</div>
     </section>
 
-    <!-- ABOUT (REPLACED WITH YOUR NEW VERSION) -->
+    <!-- ABOUT -->
     <section class="panel" id="about">
       <div class="kicker">ABOUT</div>
       <div class="title" style="font-size:44px">What is Endless Galaxy?</div>
@@ -220,34 +423,56 @@ body.bg-contact{
         <div class="card"><b>What you’ll find</b><span>Pages, ideas, and experiments — all in one place.</span></div>
         <div class="card"><b>What’s next</b><span>More sections, better design, and new features.</span></div>
       </div>
+
+      <div class="cardgrid" style="margin-top:12px">
+        <div class="card"><b>Focus</b><span>Design + usability</span></div>
+        <div class="card"><b>Status</b><span>Actively improving</span></div>
+        <div class="card"><b>Style</b><span>Dark • clean • cinematic</span></div>
+      </div>
     </section>
 
     <!-- GALLERY -->
     <section class="panel" id="gallery">
       <div class="kicker">GALLERY</div>
-      <div class="title" style="font-size:44px">Highlights</div>
-      <div class="desc">A small preview section. Later we can add real images/cards.</div>
+      <div class="title" style="font-size:44px">Galaxy Picks</div>
+      <div class="desc">Click any card to open a full preview.</div>
 
-      <div class="cardgrid">
-        <div class="card"><b>Milky Way</b><span>Deep space background aesthetic.</span></div>
-        <div class="card"><b>Neon Accent</b><span>Pink buttons + soft glow.</span></div>
-        <div class="card"><b>Clean Layout</b><span>Simple navigation + focus.</span></div>
+      <div class="gallerygrid">
+        <div class="gcard" data-title="Nebula Glow" data-desc="A bright nebula vibe with rich colors."
+             data-img="https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg">
+          <div class="gimg" style="background-image:url('https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg')"></div>
+          <div class="gmeta"><b>Nebula Glow</b><span>Tap to preview</span></div>
+        </div>
+
+        <div class="gcard" data-title="Deep Space" data-desc="A calmer deep-space look for a clean aesthetic."
+             data-img="https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg">
+          <div class="gimg" style="background-image:url('https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg')"></div>
+          <div class="gmeta"><b>Deep Space</b><span>Tap to preview</span></div>
+        </div>
+
+        <div class="gcard" data-title="Planet Horizon" data-desc="A cinematic planet scene with depth."
+             data-img="https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg">
+          <div class="gimg" style="background-image:url('https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg')"></div>
+          <div class="gmeta"><b>Planet Horizon</b><span>Tap to preview</span></div>
+        </div>
       </div>
+
+      <div class="note">Want more gallery cards? Tell me how many and I’ll add them.</div>
     </section>
 
     <!-- CONTACT -->
     <section class="panel" id="contact">
       <div class="kicker">CONTACT</div>
       <div class="title" style="font-size:44px">Send a message</div>
-      <div class="desc">This is a demo form (it won’t email). It just shows a success message.</div>
+      <div class="desc">This form is a demo (no email). It shows a confirmation message.</div>
 
       <input class="input" id="cName" placeholder="Your name" />
       <input class="input" id="cEmail" placeholder="Your email" />
       <textarea rows="4" id="cMsg" placeholder="Your message"></textarea>
 
-      <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn" id="sendBtn">Send</button>
-        <button class="navbtn" id="clearBtn" style="border-radius:999px">Clear</button>
+      <div class="btnrow" style="margin-top:12px">
+        <button class="btn" id="sendBtn">📩 Send</button>
+        <button class="btn secondary" id="clearBtn">🧹 Clear</button>
       </div>
 
       <div class="note" id="contactStatus"></div>
@@ -255,8 +480,30 @@ body.bg-contact{
 
   </div>
 
+  <!-- Modal -->
+  <div class="modalbg" id="modalBg" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modalhead">
+        <div>
+          <b id="mTitle">Preview</b>
+          <div style="font-size:12px;opacity:.9" id="mSub"></div>
+        </div>
+        <button class="xbtn" id="closeModal" aria-label="Close">✕</button>
+      </div>
+      <div class="modalbody">
+        <div class="modalimg" id="mImg"></div>
+        <div class="modaltext" id="mDesc"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div id="tTitle">Done</div>
+    <small id="tDesc">Saved.</small>
+  </div>
+
   <script>
-    // --- Page switching (single-file "multi-page") ---
     const navBtns = document.querySelectorAll(".navbtn[data-page]");
     const panels = document.querySelectorAll(".panel");
 
@@ -264,24 +511,56 @@ body.bg-contact{
       panels.forEach(p => p.classList.toggle("active", p.id === id));
       navBtns.forEach(b => b.classList.toggle("active", b.dataset.page === id));
 
-      // background swap (different image per page)
       document.body.classList.remove("bg-home","bg-about","bg-gallery","bg-contact");
       document.body.classList.add("bg-" + id);
 
-      // update URL hash (optional)
       history.replaceState(null, "", "#" + id);
     }
 
-    navBtns.forEach(btn => {
-      btn.addEventListener("click", () => showPage(btn.dataset.page));
-    });
+    navBtns.forEach(btn => btn.addEventListener("click", () => showPage(btn.dataset.page)));
 
-    // open correct page if hash exists
     const hash = location.hash.replace("#","");
     if(hash && document.getElementById(hash)) showPage(hash);
 
-    // Home button
     document.getElementById("startBtn").addEventListener("click", () => showPage("about"));
+    document.getElementById("exploreBtn").addEventListener("click", () => showPage("gallery"));
+
+    // Toast helper
+    let toastTimer = null;
+    function toast(title, desc){
+      const box = document.getElementById("toast");
+      document.getElementById("tTitle").textContent = title;
+      document.getElementById("tDesc").textContent = desc || "";
+      box.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=> box.classList.remove("show"), 2200);
+    }
+
+    // Gallery modal
+    const modalBg = document.getElementById("modalBg");
+    const mTitle = document.getElementById("mTitle");
+    const mSub = document.getElementById("mSub");
+    const mDesc = document.getElementById("mDesc");
+    const mImg = document.getElementById("mImg");
+
+    function openModal(title, img, desc){
+      mTitle.textContent = title;
+      mSub.textContent = "Gallery preview";
+      mDesc.textContent = desc;
+      mImg.style.backgroundImage = `url('${img}')`;
+      modalBg.classList.add("show");
+    }
+    function closeModal(){ modalBg.classList.remove("show"); }
+
+    document.querySelectorAll(".gcard").forEach(card=>{
+      card.addEventListener("click", ()=>{
+        openModal(card.dataset.title, card.dataset.img, card.dataset.desc);
+      });
+    });
+
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    modalBg.addEventListener("click", (e)=>{ if(e.target === modalBg) closeModal(); });
+    document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
 
     // Contact demo
     const status = document.getElementById("contactStatus");
@@ -292,13 +571,17 @@ body.bg-contact{
 
       if(!name || !email || !msg){
         status.textContent = "Please fill all fields.";
+        toast("Missing info", "Fill all fields first.");
         return;
       }
       if(!email.includes("@")){
         status.textContent = "Please enter a valid email.";
+        toast("Invalid email", "Check your email address.");
         return;
       }
+
       status.textContent = "Message sent (demo). ✅";
+      toast("Sent ✅", "Your message was submitted (demo).");
     });
 
     document.getElementById("clearBtn").addEventListener("click", () => {
@@ -306,6 +589,7 @@ body.bg-contact{
       document.getElementById("cEmail").value = "";
       document.getElementById("cMsg").value = "";
       status.textContent = "";
+      toast("Cleared", "Form cleared.");
     });
   </script>
 </body>
