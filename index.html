@@ -8,12 +8,36 @@
   <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:"Segoe UI",sans-serif; }
 
+    /* default background (Home) */
+    :root{
+      --bg-img: url("https://cdn.eso.org/images/wallpaper5/eso0932a.jpg");
+    }
+
     body{
       min-height:100vh;
       background:
         linear-gradient(rgba(30,0,60,.72), rgba(30,0,60,.72)),
-        url("https://cdn.eso.org/images/wallpaper5/eso0932a.jpg") no-repeat center/cover;
+        var(--bg-img) no-repeat center/cover;
       color:#fff;
+      transition: background 300ms ease;
+      overflow-x:hidden;
+    }
+
+    /* Different background for each section */
+    body.bg-home{
+      --bg-img: url("https://cdn.eso.org/images/wallpaper5/eso0932a.jpg");
+    }
+
+    body.bg-about{
+      --bg-img: url("https://cdn.eso.org/images/wallpaper2/eso1907a.jpg");
+    }
+
+    body.bg-gallery{
+      --bg-img: url("https://cdn.eso.org/images/wallpaper2/eso1716a.jpg");
+    }
+
+    body.bg-contact{
+      --bg-img: url("https://cdn.eso.org/images/wallpaper2/eso0932a.jpg");
     }
 
     nav{
@@ -154,7 +178,7 @@
   </style>
 </head>
 
-<body>
+<body class="bg-home">
   <nav>
     <h1>Endless Galaxy</h1>
 
@@ -174,22 +198,26 @@
       <div class="title">Endless Galaxy</div>
       <div class="desc">This galaxy belongs to Endless — my vision, my world.</div>
       <button class="btn" id="startBtn">Get Started</button>
-      <div class="note">Tip: Use the menu to switch pages (without leaving this file).</div>
+      <div class="note">Tip: Use the menu to switch pages (background changes too).</div>
     </section>
 
-    <!-- ABOUT -->
+    <!-- ABOUT (REPLACED WITH YOUR NEW VERSION) -->
     <section class="panel" id="about">
       <div class="kicker">ABOUT</div>
-      <div class="title" style="font-size:44px">Why “Endless Galaxy”?</div>
+      <div class="title" style="font-size:44px">What is Endless Galaxy?</div>
+
       <div class="desc">
-        Endless Galaxy is my space to build, test, and share ideas. I like clean design, bold visuals,
-        and projects that feel fun to explore.
+        Endless Galaxy is a personal project I’m building for myself — a place to experiment, improve my skills,
+        and turn ideas into something real. I care about simple design, strong visuals, and pages that feel smooth
+        to use on both mobile and desktop.
+        <br><br>
+        This site will keep evolving. Every update is part of the journey.
       </div>
 
       <div class="cardgrid">
-        <div class="card"><b>Vision</b><span>A personal universe for creativity.</span></div>
-        <div class="card"><b>Style</b><span>Dark, modern, and cinematic.</span></div>
-        <div class="card"><b>Goal</b><span>Keep improving and adding new features.</span></div>
+        <div class="card"><b>Why I made it</b><span>To build something I can grow over time.</span></div>
+        <div class="card"><b>What you’ll find</b><span>Pages, ideas, and experiments — all in one place.</span></div>
+        <div class="card"><b>What’s next</b><span>More sections, better design, and new features.</span></div>
       </div>
     </section>
 
@@ -234,6 +262,11 @@
     function showPage(id){
       panels.forEach(p => p.classList.toggle("active", p.id === id));
       navBtns.forEach(b => b.classList.toggle("active", b.dataset.page === id));
+
+      // background swap (different image per page)
+      document.body.classList.remove("bg-home","bg-about","bg-gallery","bg-contact");
+      document.body.classList.add("bg-" + id);
+
       // update URL hash (optional)
       history.replaceState(null, "", "#" + id);
     }
@@ -276,4 +309,3 @@
   </script>
 </body>
 </html>
-
