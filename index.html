@@ -6,73 +6,140 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    body {
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
       height: 100vh;
+      background: linear-gradient(
+          rgba(30, 0, 60, 0.7),
+          rgba(30, 0, 60, 0.7)
+        ),
+        url("https://images.unsplash.com/photo-1520975916090-3105956dac38?auto=format&fit=crop&w=1600&q=80")
+        no-repeat center center/cover;
+      color: white;
+      overflow: hidden;
+    }
+
+    /* NAVBAR */
+    nav {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      background: linear-gradient(135deg, #cce7ff, #e6f3ff);
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      text-align: center;
+      padding: 25px 80px;
     }
 
-    .container {
-      background: white;
-      padding: 60px 40px;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-      max-width: 600px;
-      width: 90%;
+    nav h1 {
+      font-size: 28px;
+      letter-spacing: 2px;
     }
 
-    h1 {
-      font-size: 3rem;
-      color: #0f172a;
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 30px;
+    }
+
+    nav ul li {
+      cursor: pointer;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+
+    nav ul li:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      height: calc(100vh - 100px);
+      display: flex;
+      align-items: center;
+      padding-left: 80px;
+    }
+
+    .hero-content {
+      max-width: 550px;
+    }
+
+    .hero h2 {
+      font-size: 18px;
+      letter-spacing: 3px;
+      opacity: 0.8;
       margin-bottom: 15px;
     }
 
-    p {
-      font-size: 1.2rem;
-      color: #334155;
-      line-height: 1.6;
+    .hero h1 {
+      font-size: 64px;
+      line-height: 1.1;
+      margin-bottom: 20px;
     }
 
-    .highlight {
-      color: #2563eb;
-      font-weight: bold;
+    .hero p {
+      font-size: 18px;
+      opacity: 0.9;
+      margin-bottom: 30px;
+      max-width: 480px;
     }
 
     .btn {
-      margin-top: 25px;
       padding: 14px 28px;
-      font-size: 16px;
-      border: none;
-      border-radius: 30px;
-      background: #2563eb;
+      background: #ff2f6d;
       color: white;
+      border: none;
+      border-radius: 40px;
+      font-size: 16px;
       cursor: pointer;
-      transition: 0.3s ease;
+      transition: 0.3s;
     }
 
     .btn:hover {
-      background: #1e40af;
+      background: #ff4b84;
       transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 20px;
+      }
+      .hero {
+        padding: 40px;
+      }
+      .hero h1 {
+        font-size: 42px;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>Welcome to <span class="highlight">Endless Galaxy</span></h1>
-    <p>
-      A clean, modern website built with passion ✨  
-      Explore, create, and grow beyond limits.
-    </p>
 
-    <button class="btn" onclick="alert('Welcome to Endless Galaxy! 🚀')">
-      Get Started
-    </button>
-  </div>
+  <nav>
+    <h1>HIRONAMA</h1>
+    <ul>
+      <li>About</li>
+      <li>Schedule</li>
+      <li>Guests</li>
+      <li>Contact</li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h2>WELCOME TO</h2>
+      <h1>HIRONAMA CON '25</h1>
+      <p>
+        Experience the ultimate celebration of creativity, culture, and imagination.
+        Join thousands of fans in a world of art, cosplay, and inspiration.
+      </p>
+      <button class="btn">Get Tickets</button>
+    </div>
+  </section>
+
 </body>
 </html>
