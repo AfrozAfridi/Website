@@ -6,139 +6,274 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Segoe UI", sans-serif;
+    * { margin:0; padding:0; box-sizing:border-box; font-family:"Segoe UI",sans-serif; }
+
+    body{
+      min-height:100vh;
+      background:
+        linear-gradient(rgba(30,0,60,.72), rgba(30,0,60,.72)),
+        url("https://cdn.eso.org/images/wallpaper5/eso0932a.jpg") no-repeat center/cover;
+      color:#fff;
     }
 
-    body {
-      height: 100vh;
-      background: linear-gradient(
-          rgba(30, 0, 60, 0.7),
-          rgba(30, 0, 60, 0.7)
-        ),
-        url("https://cdn.eso.org/images/wallpaper5/eso0932a.jpg")
-        no-repeat center center/cover;
-      color: white;
-      overflow: hidden;
+    nav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding: 22px 70px;
+      gap:20px;
     }
 
-    /* NAVBAR */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 25px 80px;
+    nav h1{
+      font-size:28px;
+      letter-spacing:2px;
+      user-select:none;
     }
 
-    nav h1 {
-      font-size: 28px;
-      letter-spacing: 2px;
+    nav ul{
+      list-style:none;
+      display:flex;
+      gap:18px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
     }
 
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 30px;
+    .navbtn{
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      color:#fff;
+      padding:10px 16px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:600;
+      transition:.25s;
+    }
+    .navbtn:hover{ background: rgba(255,255,255,.18); transform: translateY(-1px); }
+    .navbtn.active{
+      background:#ff2f6d;
+      border-color: transparent;
+      box-shadow: 0 12px 28px rgba(255,47,109,.25);
     }
 
-    nav ul li {
-      cursor: pointer;
-      font-weight: 500;
-      opacity: 0.85;
+    .wrap{
+      padding: 30px 70px 70px;
+      max-width: 1150px;
     }
 
-    nav ul li:hover {
-      opacity: 1;
-      text-decoration: underline;
+    .panel{
+      display:none;
+      max-width: 720px;
+      padding: 22px 22px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
     }
+    .panel.active{ display:block; }
 
-    /* HERO SECTION */
-    .hero {
-      height: calc(100vh - 100px);
-      display: flex;
-      align-items: center;
-      padding-left: 80px;
-    }
-
-    .hero-content {
-      max-width: 550px;
-    }
-
-    .hero h2 {
-      font-size: 18px;
+    .kicker{
+      font-size: 15px;
       letter-spacing: 3px;
-      opacity: 0.8;
-      margin-bottom: 15px;
+      opacity:.85;
+      margin-bottom: 12px;
     }
 
-    .hero h1 {
+    .title{
       font-size: 64px;
-      line-height: 1.1;
-      margin-bottom: 20px;
+      line-height: 1.05;
+      margin-bottom: 14px;
     }
 
-    .hero p {
+    .desc{
       font-size: 18px;
-      opacity: 0.9;
-      margin-bottom: 30px;
-      max-width: 480px;
+      opacity:.92;
+      line-height: 1.6;
+      margin-bottom: 22px;
+      max-width: 600px;
     }
 
-    .btn {
+    .btn{
+      display:inline-block;
       padding: 14px 28px;
       background: #ff2f6d;
-      color: white;
+      color: #fff;
       border: none;
-      border-radius: 40px;
+      border-radius: 999px;
       font-size: 16px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: .25s;
+      text-decoration:none;
+      font-weight:700;
+    }
+    .btn:hover{ background:#ff4b84; transform: scale(1.03); }
+
+    .cardgrid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      margin-top: 10px;
+    }
+    .card{
+      padding:14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    .card b{ display:block; margin-bottom:6px; }
+    .card span{ opacity:.9; font-size:14px; line-height:1.4; }
+
+    .input, textarea{
+      width:100%;
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color:#fff;
+      outline:none;
+    }
+    .input:focus, textarea:focus{
+      border-color: rgba(255,47,109,.65);
+      box-shadow: 0 0 0 3px rgba(255,47,109,.18);
     }
 
-    .btn:hover {
-      background: #ff4b84;
-      transform: scale(1.05);
+    .note{
+      margin-top:10px;
+      font-size: 13px;
+      opacity:.85;
     }
 
-    @media (max-width: 768px) {
-      nav {
-        padding: 20px;
-      }
-      .hero {
-        padding: 40px;
-      }
-      .hero h1 {
-        font-size: 42px;
-      }
+    @media (max-width: 900px){
+      nav{ padding: 18px 18px; }
+      .wrap{ padding: 22px 18px 70px; }
+      .title{ font-size: 44px; }
+      .cardgrid{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
 
 <body>
-
   <nav>
-    <h1>EndLess Galaxy</h1>
+    <h1>Endless Galaxy</h1>
+
     <ul>
-      <li>About</li>
-      <li>Schedule</li>
-      <li>Guests</li>
-      <li>Contact</li>
+      <li><button class="navbtn active" data-page="home">Home</button></li>
+      <li><button class="navbtn" data-page="about">About</button></li>
+      <li><button class="navbtn" data-page="gallery">Gallery</button></li>
+      <li><button class="navbtn" data-page="contact">Contact</button></li>
     </ul>
   </nav>
 
-  <section class="hero">
-    <div class="hero-content">
-      <h2>WELCOME TO</h2>
-      <h1>Endless Galaxy</h1>
-      <p>
-        A galaxy shaped by my imagination.
-      </p>
-      <button class="btn">Get Started</button>
-    </div>
-  </section>
+  <div class="wrap">
 
+    <!-- HOME -->
+    <section class="panel active" id="home">
+      <div class="kicker">WELCOME TO</div>
+      <div class="title">Endless Galaxy</div>
+      <div class="desc">This galaxy belongs to Endless — my vision, my world.</div>
+      <button class="btn" id="startBtn">Get Started</button>
+      <div class="note">Tip: Use the menu to switch pages (without leaving this file).</div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="panel" id="about">
+      <div class="kicker">ABOUT</div>
+      <div class="title" style="font-size:44px">Why “Endless Galaxy”?</div>
+      <div class="desc">
+        Endless Galaxy is my space to build, test, and share ideas. I like clean design, bold visuals,
+        and projects that feel fun to explore.
+      </div>
+
+      <div class="cardgrid">
+        <div class="card"><b>Vision</b><span>A personal universe for creativity.</span></div>
+        <div class="card"><b>Style</b><span>Dark, modern, and cinematic.</span></div>
+        <div class="card"><b>Goal</b><span>Keep improving and adding new features.</span></div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="panel" id="gallery">
+      <div class="kicker">GALLERY</div>
+      <div class="title" style="font-size:44px">Highlights</div>
+      <div class="desc">A small preview section. Later we can add real images/cards.</div>
+
+      <div class="cardgrid">
+        <div class="card"><b>Milky Way</b><span>Deep space background aesthetic.</span></div>
+        <div class="card"><b>Neon Accent</b><span>Pink buttons + soft glow.</span></div>
+        <div class="card"><b>Clean Layout</b><span>Simple navigation + focus.</span></div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="panel" id="contact">
+      <div class="kicker">CONTACT</div>
+      <div class="title" style="font-size:44px">Send a message</div>
+      <div class="desc">This is a demo form (it won’t email). It just shows a success message.</div>
+
+      <input class="input" id="cName" placeholder="Your name" />
+      <input class="input" id="cEmail" placeholder="Your email" />
+      <textarea rows="4" id="cMsg" placeholder="Your message"></textarea>
+
+      <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" id="sendBtn">Send</button>
+        <button class="navbtn" id="clearBtn" style="border-radius:999px">Clear</button>
+      </div>
+
+      <div class="note" id="contactStatus"></div>
+    </section>
+
+  </div>
+
+  <script>
+    // --- Page switching (single-file "multi-page") ---
+    const navBtns = document.querySelectorAll(".navbtn[data-page]");
+    const panels = document.querySelectorAll(".panel");
+
+    function showPage(id){
+      panels.forEach(p => p.classList.toggle("active", p.id === id));
+      navBtns.forEach(b => b.classList.toggle("active", b.dataset.page === id));
+      // update URL hash (optional)
+      history.replaceState(null, "", "#" + id);
+    }
+
+    navBtns.forEach(btn => {
+      btn.addEventListener("click", () => showPage(btn.dataset.page));
+    });
+
+    // open correct page if hash exists
+    const hash = location.hash.replace("#","");
+    if(hash && document.getElementById(hash)) showPage(hash);
+
+    // Home button
+    document.getElementById("startBtn").addEventListener("click", () => showPage("about"));
+
+    // Contact demo
+    const status = document.getElementById("contactStatus");
+    document.getElementById("sendBtn").addEventListener("click", () => {
+      const name = document.getElementById("cName").value.trim();
+      const email = document.getElementById("cEmail").value.trim();
+      const msg = document.getElementById("cMsg").value.trim();
+
+      if(!name || !email || !msg){
+        status.textContent = "Please fill all fields.";
+        return;
+      }
+      if(!email.includes("@")){
+        status.textContent = "Please enter a valid email.";
+        return;
+      }
+      status.textContent = "Message sent (demo). ✅";
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", () => {
+      document.getElementById("cName").value = "";
+      document.getElementById("cEmail").value = "";
+      document.getElementById("cMsg").value = "";
+      status.textContent = "";
+    });
+  </script>
 </body>
 </html>
+
